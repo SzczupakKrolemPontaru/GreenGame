@@ -1,8 +1,5 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <MainNav/>
   <router-view/>
 </template>
 
@@ -28,3 +25,9 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+import MainNav from "@/components/MainNav";
+export default {
+  components: {MainNav}
+}
+</script>
