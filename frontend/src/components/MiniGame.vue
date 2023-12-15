@@ -15,7 +15,7 @@
         pointsMultiplier: 0,
         multiplayer: false,
         gameID: 0,
-        gameNumber: 0,
+       // gameNumber: 0,
       };
     },
     methods: {
@@ -28,7 +28,7 @@
       loadMultiplayerModule() {
         
       },
-      sendToDatabase(playerScore) {
+     /* sendToDatabase(playerScore) {
         
       },
       loadGameFromHub(gameNumber) {
@@ -36,7 +36,7 @@
       },
       sendToMultiplayer(playerScore) {
         
-      },
+      },*/
     },
     mounted() {
       

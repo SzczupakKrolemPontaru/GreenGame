@@ -1,14 +1,22 @@
 <template>
     <div>
       <div class="background2"></div>
+      <button @click="handleButtonClick">Click me!</button>
+    <button @click="handleButton2Click">Click me too!</button>
     </div>
   </template>
   
   <script>
-  export default {
-    methods: {
-    }
-  };
+export default {
+  methods: {
+    handleButtonClick() {
+      this.$router.push('/minigame');
+    },
+    handleButton2Click() {
+      this.$router.push('/minigame');
+    },
+  },
+};
   </script>
   
   <style>
@@ -29,4 +37,11 @@
     background-size: cover;
     pointer-events: none;
   }
+  button {
+  margin-top: 140px;
+  margin-right: 95px;
+  padding:40px 50px;
+  font-size: 16px;
+  cursor: pointer;
+}
   </style>

@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import StartGame from '../views/StartGame.vue'
+import ChooseLevel from '../views/ChooseLevel.vue'
+import MiniGame from '../components/MiniGame.vue'
 
 const routes = [
   {
@@ -20,6 +22,16 @@ const routes = [
     path: '/start',
     name: 'start',
     component: StartGame
+  },
+  {
+    path: '/choose',
+    name: 'choose',
+    component: ChooseLevel
+  },
+  {
+    path: '/minigame',
+    name: 'minigame',
+    component: MiniGame
   }
 ]
 

@@ -1,7 +1,7 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">TUTAJ przejscie z GAMEchooseHUB</router-link> |
+    <router-link to="/start">START GAME</router-link>
   </nav>
   <router-view/>
 </template>
