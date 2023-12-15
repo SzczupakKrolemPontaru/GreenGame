@@ -1,6 +1,6 @@
 <template>
   <div>
-    <GameTile v-for="game in availableGames" :key="game.id" :game="game" />
+    <GameTile v-for="(game, index) in availableGames" :key="index" ref="gameTiles"/>
   </div>
 </template>
 
@@ -18,10 +18,9 @@ export default {
   },
   methods: {
     displayGames() {
-
+      // ta metoda jest niepotrzebna w ogóle XD
     },
     selectGame() {
-
     }
   }
 }
