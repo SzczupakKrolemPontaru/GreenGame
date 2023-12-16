@@ -1,34 +1,48 @@
 <template>
   <div>
-    <div v-for="ch in chats" :key="ch.id">
+    <div v-for="session in sessions" :key="session.id">
       <div>
-        <small>{{ ch.date }}</small>
-        <p>{{ ch.name }}</p>
+        <small>Session ID: {{ session.id }}</small>
+        <div v-for="player in session.players" :key="player.id">
+          <p>Player: {{ player }}</p>
+        </div>
+        <div>
+          <p>Messages:</p>
+          <div v-for="message in session.messages" :key="message.id">
+            <p>{{ message.sender }}: {{ message.content }}</p>
+          </div>
+        </div>
       </div>
     </div>
+    <button @click="createNewSession">Create New Session</button>
+    <button @click="sendMessage">Send Message</button>
   </div>
 </template>
 
 <script>
-import { db } from "@/firebaseConfig";
-import { onSnapshot, collection, orderBy, query } from "firebase/firestore";
-import { ref, onUnmounted } from "vue";
+import {sharedSessionManager} from "@/sessionManager";
 
 export default {
   name: "MultiplayerBoard",
   data: () => ({
-    chats: ref([]),
+    sessions: [],
   }),
+  methods: {
+    createNewSession() {
+      sharedSessionManager.createNewSession();
+    },
+    sendMessage() {
+      sharedSessionManager.sendMessage('BeFw4gC3T6SPO80oq42g', 'Hello, Player 2!');
+    },
+  },
   mounted() {
-    const chatSnapshot = onSnapshot(
-        query(collection(db, "chat"), orderBy("date", "desc")),
-        (snapshot) => {
-          this.chats = snapshot.docs.map((doc) => {
-            return { ...doc.data(), id: doc.id };
-          });
-        }
-    );
-    onUnmounted(chatSnapshot);
+    sharedSessionManager.subscribeToSessions((sessions) => {
+      this.sessions = sessions;
+    });
+  },
+  // Make sure to stop listening when the component is destroyed
+  beforeUnmount() {
+    sharedSessionManager.stopListeningToSessions();
   },
 };
 </script>
