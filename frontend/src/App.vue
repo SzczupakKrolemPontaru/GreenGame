@@ -27,7 +27,22 @@ nav a.router-link-exact-active {
 </style>
 <script>
 import MainNav from "@/components/MainNav";
+import {onMounted} from "vue";
+import {auth} from './firebase/firebase.js'
+import {store} from "@/store";
 export default {
-  components: {MainNav}
+  components: {MainNav},
+  setup() {
+    onMounted(() => {
+      console.log('App loaded!');
+      auth.onAuthStateChanged((user) => {
+        store.user = user;
+        console.log('User changed to: ', user);
+      })
+    });
+  }
+
 }
+
+
 </script>

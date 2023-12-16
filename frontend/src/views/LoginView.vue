@@ -64,8 +64,9 @@
                 @blur="setConfirmTouched"
             />
             <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Password and password confirm don't match!</p>
-          </div>
 
+          </div>
+          <p v-if="this.serverMessage.length > 0">Server error: {{this.serverMessage}}</p>
           <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Submit</button>
         </form>
       </div>
@@ -76,7 +77,7 @@
 </template>
 
 <script>
-import {store} from '@/store';
+import {createUser, signInUser} from "@/firebase/firebase";
 
 export default {
   name: "LoginView",
@@ -91,6 +92,7 @@ export default {
       confirmTouched: false,
       errors: [],
       emailRegex: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      serverMessage: ''
 
     };
   },
@@ -138,25 +140,48 @@ export default {
       return !(this.isEmailInvalid() || this.isPasswordInvalid() || this.isPasswordConfirmInvalid())
 
     },
-    submitForm() {
+    async submitForm() {
       {
-        if (this.type === 'login') {
-          //todo get data from Firebase Login
+        try {
+          if (this.type === 'login') {
 
-        } else {
-          //todo register Firebase user
+            await signInUser(this.email, this.password);
+
+          } else {
+            await createUser(
+                this.email,
+                this.password
+            );
+          }
+          await this.$router.push('/');
+        } catch (e) {
+          console.log(e.code);
+          this.errorHandling(e);
+          console.log(this.serverMessage);
         }
-        console.log(this.email)
-        console.log(this.password)
-        store.user = {
-          email: this.email,
-          name: 'testName'
-        };
-        this.$router.push('/');
+
+
 
 
       }
     },
+    errorHandling(e) {
+      switch (e.code) {
+        case 'auth/invalid-credential':
+          this.serverMessage = 'This account does not exist';
+          break;
+        case 'auth/wrong-password':
+          this.serverMessage = 'Wrong password';
+          break;
+        case 'auth/network-request-failed':
+          this.serverMessage = 'Check your network connection!';
+          break;
+
+        default:
+          this.serverMessage= 'Case ${e.message} is not yet implemented';
+      }
+
+    }
   }
 }
 </script>
