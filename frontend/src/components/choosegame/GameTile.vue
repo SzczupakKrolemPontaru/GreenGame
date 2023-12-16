@@ -4,25 +4,31 @@
     <Minigame ref="minigame"/>
     <Quiz ref="quiz"/>
     <div>
-      <button class="btn" @click="displayScoreboard = true">Wyświetl ranking</button>
-      <div v-if="displayScoreboard" class="modal">
-        <div class="modal-content">
-          <h2>Ranking</h2>
-          <table>
-            <thead>
-            <tr>
-              <th>Gracz</th>
-              <th>Wynik</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="score in gameScores" :key="score.playerID">
-              <td>{{ score.playerID }}</td>
-              <td>{{ score.score }}</td>
-            </tr>
-            </tbody>
-          </table>
-          <button @click="displayScoreboard = false">Zamknij</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#scoreboardModal">Wyświetl ranking</button>
+      <div class="modal fade" id="scoreboardModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title" id="scoreboardModalLabel">Ranking</h3>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">Gracz</th>
+                  <th scope="col">Wynik</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="score in gameScores" :key="score.playerID">
+                  <td>{{ score.playerID }}</td>
+                  <td>{{ score.score }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -31,6 +37,7 @@
 
 <script>
 import router from '@/router';
+import {Modal} from "bootstrap";
 
 export default {
   name: 'GameTile',
@@ -89,6 +96,11 @@ export default {
     },
   },
 
+  mounted() {
+    let modalElement = document.getElementById('scoreboardModal');
+    this.modalInstance = new Modal(modalElement);
+  },
+
   methods: {
     // Rozpoczyna minigrę, jeśli quiz został ukończony
     startGame() {
@@ -126,34 +138,31 @@ export default {
     // Pobiera status quizu
     getQuizStatus() {
       return this.$refs.quiz.isFinished[this.userName];
-    }
+    },
+
+    showModal() {
+      this.modalInstance.show();
+    },
 
   }
 }
 </script>
 
 <style scoped>
+.game-tile {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 .game-icon {
   border: 1px solid black;
+  border-radius: 10px;
   cursor: pointer;
+  padding: 10px;
+  text-align: center;
 }
 
-.modal {
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+.btn-primary {
+  margin-top: 20px;
 }
 </style>

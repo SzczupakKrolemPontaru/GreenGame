@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import GameChooseHUB from '../views/GameChooseHUB.vue'
+import GameChooseHUB from '../views/choosegame/GameChooseHUB.vue'
 
 const routes = [
   {

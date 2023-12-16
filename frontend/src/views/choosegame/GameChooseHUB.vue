@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import GameTile from './GameTile.vue'
+import GameTile from '../../components/choosegame/GameTile.vue'
 export default {
   name: 'GameChooseHUB',
   components: {
