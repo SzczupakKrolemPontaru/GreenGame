@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <h1>Home</h1>
-    <p>
-      Welcome to the home page! This is a great place to show off your
-      application. type /multiplayer to see the multiplayer board.
-    </p>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'HomeView', // Updated the component name
-};
-</script>
+import HelloWorld from '@/components/HelloWorld.vue'
 
-<style>
-/* Your styles go here */
-</style>
+export default {
+  name: 'HomeView',
+  components: {
+    HelloWorld
+  }
+}
+</script>

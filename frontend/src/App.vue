@@ -1,22 +1,29 @@
 <!-- src/App.vue -->
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <nav>
+    <router-link to="/">TUTAJ przejscie z GAMEchooseHUB</router-link> |
+    <router-link to="/start">START GAME</router-link>
+  </nav>
+  <router-view/>
 </template>
-
-<script>
-export default {
-  name: 'App',
-};
-</script>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
 }
 
 h1 {
