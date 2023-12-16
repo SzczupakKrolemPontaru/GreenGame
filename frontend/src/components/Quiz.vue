@@ -2,6 +2,16 @@
   <div class="quiz-container">
     <div v-if="isOnTitlePage" class="title-page">
       <h1>Witaj w Quizie!</h1>
+      <div class="quiz-box-container">
+        <div
+            v-for="box in quizBoxes"
+            :key="box.id"
+            class="quiz-box"
+            :class="{ 'selected': selectedBoxId === box.id }"
+            @click="selectBox(box.id)">
+          {{ box.name }}
+        </div>
+      </div>
       <button @click="startQuiz">Rozpocznij Quiz</button>
     </div>
     <div v-else>
@@ -28,6 +38,8 @@
       </div>
       <div v-else class="result-card">
         <h3>Wynik: {{ score }} / {{ questions.length }}</h3>
+        <p v-if="score > 5">Gratulacje!</p>
+        <p v-else>Niestety, nie udało się.</p>
         <button @click="resetQuiz">Wybierz następny Quiz!</button>
       </div>
     </div>
@@ -47,9 +59,18 @@ export default {
       currentQuestionIndex: 0,
       score: 0,
       selectedAnswerIndex: null,
+      quizBoxes: [
+        { id: 1, name: 'Quiz 1' },
+        { id: 2, name: 'Quiz 2' },
+        { id: 3, name: 'Quiz 3' }
+      ],
+      selectedBoxId: null,
     };
   },
   methods: {
+    selectBox(id) {
+      this.selectedBoxId = id;
+    },
     exitQuiz() {
       this.isOnTitlePage = true;
       this.resetQuiz();
@@ -81,6 +102,30 @@ export default {
 </script>
 
 <style scoped>
+
+.quiz-box-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quiz-box {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-box.selected {
+  border-color: #007bff;
+  background-color: #e7f0fd;
+}
+
+
 .exit-quiz-button {
   margin-right: 5px;
 }
