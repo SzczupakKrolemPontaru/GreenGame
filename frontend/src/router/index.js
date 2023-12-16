@@ -7,8 +7,14 @@ const routes = [
     name: 'mainmenu',
     component: MainMenu,
     props: {
-      userManager: [],
-      userProfile: []
+      userManager: [{
+        "logout": "/"
+      }],
+      userProfile: [{
+        'userName': 'Maciek',
+        'booster': true,
+        'level': 4
+      }]
     }
   }
 ]
