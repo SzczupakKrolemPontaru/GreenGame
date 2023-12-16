@@ -8,6 +8,14 @@
   </div>
 </template>
 
-<script setup>
-import {store} from "@/store"
+<script>
+// @ is an alias to /src
+import HelloWorld from '@/components/HelloWorld.vue'
+
+export default {
+  name: 'HomeView',
+  components: {
+    HelloWorld
+  }
+}
 </script>
