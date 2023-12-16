@@ -1,21 +1,26 @@
+<!-- src/App.vue -->
 <template>
-  <div>
-    <MultiplayerBoard />
-    <!-- Add other components or content here if needed -->
+  <div id="app">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import MultiplayerBoard from "@/components/MultiplayerBoard.vue"; // Updated import
-
 export default {
-  name: "App",
-  components: {
-    MultiplayerBoard, // Updated component name
-    // Add other components here if needed
-  },
+  name: 'App',
 };
 </script>
 
 <style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
 </style>
