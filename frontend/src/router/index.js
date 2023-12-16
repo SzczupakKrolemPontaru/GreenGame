@@ -5,6 +5,7 @@ import ChooseLevel from '../views/ChooseLevel.vue'
 import MiniGame from '../components/MiniGame.vue'
 import Home from '@/views/HomeView.vue';
 import LoginPage from '@/components/LoginPage.vue';
+import ChooseMode from '@/views/ChooseMode.vue';
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component:LoginPage,
+  },
+  {
+    path: '/mode',
+    name: 'mode',
+    component:ChooseMode,
   }
 ]
 

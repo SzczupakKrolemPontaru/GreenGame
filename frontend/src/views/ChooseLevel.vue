@@ -10,10 +10,10 @@
 export default {
   methods: {
     handleButtonClick() {
-      this.$router.push({ name: 'minigame', params: { value: 1 } });
+      this.$router.push({ name: 'mode', params: { value: 1 } });
     },
     handleButton2Click() {
-      this.$router.push({ name: 'minigame', params: { value: 2 } });
+      this.$router.push({ name: 'mode', params: { value: 2 } });
     },
   },
 };
