@@ -7,6 +7,7 @@
 
 <script>
 export default {
+  props:['gameNumber'],//gameNumber mamy od GameChooseHUB
   mounted() {
   },
   methods: {
