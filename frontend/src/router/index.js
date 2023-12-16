@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainMenu from '../views/mainmenu/MainMenuView.vue'
+import HomeView from '../views/HomeView.vue'
+import StartGame from '../views/StartGame.vue'
+import ChooseLevel from '../views/ChooseLevel.vue'
+import MiniGame from '../components/MiniGame.vue'
+import Home from '@/views/HomeView.vue';
+import LoginPage from '@/components/LoginPage.vue';
+import ChooseMode from '@/views/ChooseMode.vue';
 
 const routes = [
   {
@@ -14,16 +20,6 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/LoginView.vue')
-  },
-  {
-    path: '/account',
-    name: 'account',
-    component: () => import('../views/AccountView.vue')
   }
 ]
 
