@@ -1,10 +1,6 @@
 <!-- src/App.vue -->
 <template>
-  <nav>
-    <router-link to="/">TUTAJ przejscie z GAMEchooseHUB</router-link> |
-    <router-link to="/start">START GAME</router-link>
-    <router-link to="/login">Login</router-link>
-  </nav>
+  <MainNav/>
   <router-view/>
 </template>
 <style>
