@@ -1,23 +1,26 @@
 <template>
     <div class="row border flex-grow-1">
 
-        <div class="col-3 border bg-primary">
+        <div class="col-3 border">
 
             <div class="row border h-80">
                 <div class="col">
-                    score board
+                    <div class="h3">TOP 10 Scoreboard</div>
+                    <ol class="list-group list-group-numbered">
+                        <li v-for="player in mainMenuInstance.displayScoreBoard()" :key="player" class="list-group-item list-group-item-dark">{{player.name}} {{player.score}}</li>
+                    </ol>
                 </div>
             </div>
 
             <div class="row border h-20">
                 <div class="col">
-                    blank
+
                 </div>
             </div>
 
         </div>
 
-        <div class="col-7 border bg-secondary">
+        <div class="col-7 border">
 
             <div class="row border h-90 my-3">
 
@@ -68,7 +71,7 @@
 
         </div>
 
-        <div class="col-2 border bg-info">
+        <div class="col-2 border">
 
             <div class="row border h-10 d-flex row-flex justify-content-end">
                 <div class="col-8 border h-70">
@@ -101,11 +104,20 @@
 </template>
 
 <script>
-export default {
-    name: 'MainMenu',
-    props: {
+    import MainMenu from './MainMenu';
+    export default {
+        name: 'MainMenu',
+        props: {
+            userManager: Array,
+            userProfile: Array,
+        },
+        computed: {
+            mainMenuInstance() {
+                return new MainMenu(this.userManager, this.userProfile);
+            },
+        }
     }
-}
+
 </script>
 
 <style scoped>

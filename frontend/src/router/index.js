@@ -5,7 +5,11 @@ const routes = [
   {
     path: '/mainmenu',
     name: 'mainmenu',
-    component: MainMenu
+    component: MainMenu,
+    props: {
+      userManager: [],
+      userProfile: []
+    }
   }
 ]
 
