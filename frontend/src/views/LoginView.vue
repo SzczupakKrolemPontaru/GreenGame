@@ -16,7 +16,7 @@
   <div class="card w-50 mx-auto">
     <div class="card-body">
       <div>
-        <h3 v-if="isLogin()" class="card-title">Enter your credentials</h3>
+        <h3 v-if="isLogin()" class="card-title">Enter your credentials</h3> <!-- Przypominam tylko że cała aplikacja ma być po polsku i przeznaczona jest na małych dzieci poniżej 10 roku życia-->
         <h3 v-if="isSignUp()" class="card-title">Enter your new account info</h3>
         <form @submit.prevent="submitForm">
           <div class="form-group mb-2">
@@ -60,7 +60,7 @@
             <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Password and password confirm don't match!</p>
 
           </div>
-          <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Submit</button>
+          <button :disabled="!isFormValid()" @click="login" type="submit" class="btn btn-primary" >Submit</button>
         </form>
         <div v-if="isLoading" class="mt-2 spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -146,16 +146,17 @@ export default {
     },
     isFormValid() {
       const valid = !(this.isEmailInvalid() || this.isPasswordInvalid() || this.isPasswordConfirmInvalid())
-      if (valid) {
-        this.$router.push({
+
+      return valid;
+    },
+    login() {
+      this.$router.push({
           name: 'mainmenu',
           params: {
             email: this.email
             // do zmiany, mail moze byc, ale przekazywany paramsami musi byc username w celu pobrani danych z bazy
           }
         })
-      }
-      return valid;
     },
     async submitForm() {
       {

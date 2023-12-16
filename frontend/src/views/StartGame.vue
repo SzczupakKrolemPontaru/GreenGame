@@ -24,7 +24,6 @@ export default {
 #app {
   position: relative;
   text-align: center;
-  margin-top: 50px;
   overflow: hidden;
 }
 

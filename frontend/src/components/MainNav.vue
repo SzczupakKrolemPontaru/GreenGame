@@ -24,6 +24,7 @@ import {store} from "@/store";
 <style scoped>
 nav {
   background-color: #333;
+  position: sticky;
 }
 
 ul {
