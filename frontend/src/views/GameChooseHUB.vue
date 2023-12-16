@@ -1,5 +1,5 @@
 <template>
-  <h1>Minigames</h1>
+  <h1>Minigry</h1>
   <div class="game-hub">
     <GameTile v-for="(game, index) in availableGames" :key="index" :gameName="game.name" :launchGame="game.launchFunction" :isQuizFinished="game.isQuizFinished" />
   </div>
@@ -7,6 +7,7 @@
 
 <script>
 import GameTile from './GameTile.vue'
+import router from "@/router";
 export default {
   name: 'GameChooseHUB',
   components: {
@@ -15,22 +16,19 @@ export default {
   data() {
     return {
       availableGames: [
-        {name: 'Game1', launchFunction: 'launchGame1', isQuizFinished: false},
-        {name: 'Game2', launchFunction: 'launchGame2'},
-        {name: 'Game3', launchFunction: 'launchGame3'},
-        {name: 'Game4', launchFunction: 'launchGame4'}
+        {name: 'Game1', launchFunction: 'selectGame1', isQuizFinished: false},
+        {name: 'Game2', launchFunction: 'selectGame2'},
+        {name: 'Game3', launchFunction: 'selectGame3'},
+        {name: 'Game4', launchFunction: 'selectGame4'}
         // na razie tak pozniej sie wstawi dane
       ],
     }
   },
   methods: {
-    displayGames() {
-      // ta metoda jest niepotrzebna w ogóle XD
-    },
-    launchGame1() {
+    selectGame1() {
       // if (Quiz1.isFinished)
       // jakoś się to połączy mam nadzieje
-      this.$router.push('/game1');
+      router.push('/game1');
     }
   }
 }
@@ -49,9 +47,7 @@ export default {
   margin-right: auto;
 
 }
-.game-hub > * {
-  cursor: pointer;
-}
+
 h1 {
   text-align: center;
   font-size: 50px;
