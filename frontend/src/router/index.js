@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import StartGame from '../views/StartGame.vue'
 import ChooseLevel from '../views/ChooseLevel.vue'
 import MiniGame from '../components/MiniGame.vue'
+import Home from '@/views/HomeView.vue';
+import LoginPage from '@/components/LoginPage.vue';
 
 const routes = [
   {
@@ -32,6 +34,16 @@ const routes = [
     path: '/minigame',
     name: 'minigame',
     component: MiniGame
+  },
+  {
+    path: '/',
+    name: 'HomeView',
+    component: Home,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component:LoginPage,
   }
 ]
 
