@@ -14,6 +14,7 @@
       </div>
       <button @click="startQuiz">Rozpocznij Quiz</button>
     </div>
+
     <div v-else>
       <div v-if="currentQuestionIndex < questions.length" class="question-card">
         <h3>{{ questions[currentQuestionIndex].text }}</h3>
@@ -22,18 +23,16 @@
               v-for="(answer, ansIndex) in questions[currentQuestionIndex].answers"
               :key="ansIndex"
               class="answer"
-              :class="{
-              'selected': selectedAnswerIndex === ansIndex,
-              'correct': selectedAnswerCorrect && selectedAnswerIndex === ansIndex,
-              'incorrect': selectedAnswerIndex === ansIndex && !selectedAnswerCorrect
-              }"
-              @click="selectedAnswerIndex = ansIndex"
+              :class="{'selected': selectedAnswerIndex === ansIndex}"
+              @click="selectAnswer(ansIndex)"
           >
-            <input type="radio" v-model="selectedAnswerIndex" :value="ansIndex" />
-            {{ answer }}
+            <span v-if="answered && selectedAnswerIndex === ansIndex && selectedAnswerCorrect">✔️ {{ answer }}</span>
+            <span v-else-if="answered && selectedAnswerIndex === ansIndex && !selectedAnswerCorrect">❌ {{ answer }}</span>
+            <span v-else>{{ answer }}</span>
           </div>
         </div>
         <button @click="checkAnswer">Sprawdź</button>
+        <button @click="nextQuestion" v-if="answered">Następne</button>
         <button @click="exitQuiz" class="exit-quiz-button">Wyjdź z Quizu</button>
       </div>
       <div v-else class="result-card">
@@ -65,18 +64,17 @@ export default {
         { id: 3, name: 'Quiz 3' }
       ],
       selectedBoxId: null,
+      answered: false,
     };
   },
   methods: {
     selectBox(id) {
       this.selectedBoxId = id;
     },
-    exitQuiz() {
-      this.isOnTitlePage = true;
-      this.resetQuiz();
-    },
-    startQuiz() {
-      this.isOnTitlePage = false;
+    selectAnswer(ansIndex) {
+      if (!this.answered) {
+        this.selectedAnswerIndex = ansIndex;
+      }
     },
     checkAnswer() {
       if (this.selectedAnswerIndex !== null) {
@@ -85,17 +83,32 @@ export default {
         if (this.selectedAnswerCorrect) {
           this.score++;
         }
-
-        this.currentQuestionIndex++;
-        this.selectedAnswerIndex = null;
-        this.selectedAnswerCorrect = null;
+        this.answered = true;
       }
+    },
+    nextQuestion() {
+      if (this.currentQuestionIndex < this.questions.length - 1) {
+        this.currentQuestionIndex++;
+      } else {
+        this.exitQuiz();
+      }
+      this.selectedAnswerIndex = null;
+      this.selectedAnswerCorrect = null;
+      this.answered = false;
+    },
+    exitQuiz() {
+      this.isOnTitlePage = true;
+      this.resetQuiz();
+    },
+    startQuiz() {
+      this.isOnTitlePage = false;
     },
     resetQuiz() {
       this.currentQuestionIndex = 0;
       this.score = 0;
       this.selectedAnswerIndex = null;
-      this.isOnTitlePage = true;
+      this.selectedBoxId = null;
+      this.answered = false;
     },
   },
 };
@@ -191,9 +204,9 @@ export default {
 }
 
 .answer.selected {
-  background-color: #4caf50;
+  background-color: #71badd;
   color: #fff;
-  border-color: #4caf50;
+  border-color: #71badd;
 }
 
 button {
