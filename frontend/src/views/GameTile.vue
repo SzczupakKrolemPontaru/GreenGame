@@ -1,10 +1,10 @@
 <template>
   <div class="game-tile">
-    <img class="game-icon" src="" alt="Ikonka minigry" @click="startGame"/>
+    <h2 class="game-icon" @click="startGame">{{ gameName }}</h2>
     <Minigame ref="minigame"/>
     <Quiz ref="quiz"/>
     <div>
-      <button class="btn-scoreboard" @click="displayScoreboard = true">Wyświetl ranking</button>
+      <button class="btn" @click="displayScoreboard = true">Wyświetl ranking</button>
       <div v-if="displayScoreboard" class="modal">
         <div class="modal-content">
           <h2>Ranking</h2>
@@ -34,6 +34,7 @@ import router from '@/router';
 
 export default {
   name: 'GameTile',
+  props: ['gameName', 'launchGame', 'isQuizFinished'],
   data() {
     return {
       gameScores: [],
@@ -138,13 +139,7 @@ export default {
 
 <style scoped>
 .game-icon {
-  width: 100px;
-  height: 100px;
   border: 1px solid black;
-  cursor: pointer;
-}
-
-button {
   cursor: pointer;
 }
 
