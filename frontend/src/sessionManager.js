@@ -8,9 +8,8 @@ class SessionManager {
         this.unsubscribe = null;
     }
 
-    createNewSession() {
-        const players = ['Player1', 'Player2']; // You can customize player names or get them dynamically
-
+    createNewSession(player) {
+        const players = [player]; // You can customize player names or get them dynamically
         const newSession = {
             players: players,
             messages: [], // Array to store messages
@@ -23,6 +22,41 @@ class SessionManager {
             .catch((error) => {
                 console.error("Error creating new session:", error.message);
             });
+    }
+    joinSession(sessionId, player) {
+        try {
+            const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
+
+            if (sessionIndex !== -1) {
+                // Found the session
+                const currentSession = this.sessions[sessionIndex];
+                const updatedSession = {
+                    ...currentSession,
+                    players: [...currentSession.players, player],
+                };
+
+                // Update the session in the sessions array
+                this.sessions.splice(sessionIndex, 1, updatedSession);
+
+                // Reference the document with the specified session ID
+                const sessionDocRef = doc(db, "sessions", sessionId);
+
+                // Update the document
+                updateDoc(sessionDocRef, {
+                    players: updatedSession.players,
+                })
+                    .then(() => {
+                        console.log(`Player ${player} joined session with ID ${sessionId}`);
+                    })
+                    .catch((error) => {
+                        console.error("Error joining session:", error.message);
+                    });
+            } else {
+                console.error(`Session ID ${sessionId} not found`);
+            }
+        } catch (error) {
+            console.error("Error joining session:", error.message);
+        }
     }
 
     subscribeToSessions(callback) {
