@@ -130,12 +130,12 @@ export default {
   methods: {
     logout() {
       this.$router.push({
-        name: '/login'
+        name: 'login'
       })
     },
     playGame() {
       this.$router.push({
-        name: '/game'
+        name: 'gamechoose'
       })
     },
     getLoggerUser() {

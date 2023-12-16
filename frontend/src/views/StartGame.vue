@@ -7,12 +7,14 @@
 
 <script>
 export default {
-  props:['gameNumber'],//gameNumber mamy od GameChooseHUB
+  props:['gameNumber'], //gameNumber mamy od GameChooseHUB
   mounted() {
   },
   methods: {
     handleButtonClick() {
-      this.$router.push('/choose');
+      this.$router.push({
+        name: 'choosemode',
+      });
     },
   },
 };

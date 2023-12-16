@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="background2"></div>
+      <div class="background4"></div>
       <button @click="handleButtonClick">Click me!</button>
       <button @click="handleButton2Click">Click me too!</button>
     </div>
@@ -27,7 +27,7 @@
     overflow: hidden;
   }
   
-  .background2 {
+  .background4 {
     position: fixed;
     width: 100%;
     height: 100%;

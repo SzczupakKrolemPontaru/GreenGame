@@ -52,6 +52,7 @@ export default {
     login() {
       this.username = this.credentials;
       this.loggedIn = true;
+      console.log("Logged in as", this.username);
     },
     async createNewSession() {
       try {

@@ -145,9 +145,17 @@ export default {
       return (this.passwordConfirm !== this.password)
     },
     isFormValid() {
-
-      return !(this.isEmailInvalid() || this.isPasswordInvalid() || this.isPasswordConfirmInvalid())
-
+      const valid = !(this.isEmailInvalid() || this.isPasswordInvalid() || this.isPasswordConfirmInvalid())
+      if (valid) {
+        this.$router.push({
+          name: 'mainmenu',
+          params: {
+            email: this.email
+            // do zmiany, mail moze byc, ale przekazywany paramsami musi byc username w celu pobrani danych z bazy
+          }
+        })
+      }
+      return valid;
     },
     async submitForm() {
       {

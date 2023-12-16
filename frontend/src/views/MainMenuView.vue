@@ -6,7 +6,7 @@
 
 <script>
     // @ is an alias to /src
-    import MainMenu from '@/components/mainmenu/MainMenu.vue'
+    import MainMenu from '@/components/MainMenu.vue'
 
     export default {
         name: 'MainMenuView',
