@@ -15,14 +15,17 @@ class SessionManager {
             messages: [], // Array to store messages
         };
 
-        addDoc(collection(db, "sessions"), newSession)
+        return addDoc(collection(db, "sessions"), newSession)
             .then((docRef) => {
                 console.log("New session created with ID:", docRef.id);
+                return docRef.id; // Zwróć identyfikator nowo utworzonej sesji
             })
             .catch((error) => {
                 console.error("Error creating new session:", error.message);
+                throw error; // Rzuć błąd, aby obsługić go w wywołującym kodzie (jeśli to konieczne)
             });
     }
+
     joinSession(sessionId, player) {
         try {
             const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
@@ -72,7 +75,7 @@ class SessionManager {
         });
     }
 
-    sendMessage(sessionId, messageContent) {
+    sendMessage(sessionId, messageContent, sender) {
         try {
             const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
 
@@ -80,7 +83,7 @@ class SessionManager {
                 // Found the session
                 const currentSession = this.sessions[sessionIndex];
                 currentSession.messages.push({
-                    sender: 'Player1', // You can customize the sender
+                    sender: sender, // You can customize the sender
                     content: messageContent,
                 });
 
@@ -101,10 +104,13 @@ class SessionManager {
             // Reference the document with the specified session ID
             const sessionDocRef = doc(db, "sessions", sessionId);
 
-            // Delete the document
+            // Delete the document in the database
             deleteDoc(sessionDocRef)
                 .then(() => {
                     console.log(`Session with ID ${sessionId} deleted successfully.`);
+
+                    // Remove the session from the local sessions array
+                    this.sessions = this.sessions.filter(session => session.id !== sessionId);
                 })
                 .catch((error) => {
                     console.error("Error deleting session:", error.message);
