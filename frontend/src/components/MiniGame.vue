@@ -19,10 +19,6 @@
       <p>Points Multiplier: {{ pointsMultiplier }}</p>
       <p>Value from Router: {{ value }}</p>
     </div>
-    <!-- Użyj slotu do wstawienia LoginPanel w rogu -->
-    <div class="login-panel-slot">
-      <slot name="loginPanel"></slot>
-    </div>
     <div v-for="trashItem in trashItems" :key="trashItem.id" class="trash" :style="{ left: trashItem.position.x + 'px', top: trashItem.position.y + 'px' }">
       <svg class="svg-object" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
         <circle cx="15" cy="15" r="15" fill="#FF0000"/>
@@ -100,17 +96,19 @@ export default {
           trashBounds.bottom > containerBounds.top &&
           trashBounds.top < containerBounds.bottom
         ) {
-          this.updateScore(1 * this.pointsMultiplier);
+          // Śmieć trafił do kontenera
+          this.updateScore(1 * this.pointsMultiplier); // Dodaj punkty z uwzględnieniem mnożnika
           this.trashItems.splice(index, 1);
         } else if (trashBounds.bottom > window.innerHeight) {
-          this.updateScore(-1 * this.pointsMultiplier);
+          // Śmieć spadł na ziemię
+          this.updateScore(-1 * this.pointsMultiplier); // Odejmij punkty z uwzględnieniem mnożnika
           this.trashItems.splice(index, 1);
         }
       });
     },
     updateTrashPositions() {
       this.trashItems.forEach((trashItem) => {
-        trashItem.position.y += 10;
+        trashItem.position.y += 10; // Zwiększono wartość z 2 na 5, dostosuj według potrzeb
       });
 
       this.checkCollisions();
@@ -128,6 +126,14 @@ export default {
 </script>
 
 <style scoped>
+/* Updated styling for the new component name */
+#app {
+  position: relative;
+  text-align: center;
+  margin-top: 50px;
+  overflow: hidden;
+}
+
 .background3 {
   position: fixed;
   width: 100%;
@@ -164,13 +170,5 @@ export default {
   width: 30px; 
   height: 30px;
   pointer-events: none;
-}
-
-/* Dodaj stylowanie dla slotu */
-.login-panel-slot {
-  position: fixed;
-  top: 0;
-  right: 0;
-  /* Dodaj inne style według potrzeb */
 }
 </style>
