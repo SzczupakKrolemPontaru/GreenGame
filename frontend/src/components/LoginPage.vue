@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div class="standard_text">
     <div v-if="!loggedIn">
       <input v-model="credentials" type="text" placeholder="your username" />
       <button @click="login" class="btn btn-primary">Login</button>
     </div>
     <div v-if="loggedIn && currentSessionId === null">
-      <header>Welcome {{ this.username }}</header>
+      <div class ="header_class"><header>Welcome {{ this.username }} !</header></div>
       <button @click="createNewSession" class="btn btn-success">Create New Session</button>
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
-          <small>Session ID: {{ session.id }}</small>
-          <small>Players: {{ session.players.length }}</small>
+          <text>Session ID: {{ session.id }}</text>
+          <div><text>Players: {{ session.players}}</text></div>
           <button @click="joinSession(session.id)" class="btn btn-info">Join Session</button>
         </div>
       </div>
@@ -87,4 +87,11 @@ export default {
 </script>
 
 <style>
+.header_class {
+  font-size: 50px;
+  font-weight: bold;
+}
+.standard_text {
+  font-size: 25px;
+}
 </style>
