@@ -1,4 +1,5 @@
 <template>
+  <MainNav/>
   <router-view/>
 </template>
 
@@ -24,3 +25,24 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+import MainNav from "@/components/MainNav";
+import {onMounted} from "vue";
+import {auth} from './firebase/firebase.js'
+import {store} from "@/store";
+export default {
+  components: {MainNav},
+  setup() {
+    onMounted(() => {
+      console.log('App loaded!');
+      auth.onAuthStateChanged((user) => {
+        store.user = user;
+        console.log('User changed to: ', user);
+      })
+    });
+  }
+
+}
+
+
+</script>
