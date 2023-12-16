@@ -34,7 +34,7 @@ import router from '@/router';
 
 export default {
   name: 'GameTile',
-  props: ['gameName', 'launchGame', 'isQuizFinished'],
+  props: ['gameName'],
   data() {
     return {
       gameScores: [],
@@ -67,14 +67,9 @@ export default {
       template: '<div>Mock Quiz</div>',
       data() {
         return {
-          isFinished: {
-            gracz1: true,
-            gracz2: false,
-            gracz3: true,
-            gracz4: false,
-          }
-        }
-      }
+          isFinished: true,
+        };
+      },
     },
   },
 
