@@ -1,10 +1,13 @@
 <template>
   <div class="game-tile">
-    <h2 class="game-icon" @click="startGame">{{ gameName }}</h2>
+    <div class="game-container" @click="startGame">
+      <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon" />
+      <h2 class="game-title" v-else>{{ gameName }}</h2>
+    </div>
     <Minigame ref="minigame"/>
     <Quiz ref="quiz"/>
     <div>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#scoreboardModal">Wyświetl ranking</button>
+      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal">Wyświetl ranking</button>
       <div class="modal fade" id="scoreboardModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -41,7 +44,7 @@ import {Modal} from "bootstrap";
 
 export default {
   name: 'GameTile',
-  props: ['gameName'],
+  props: ['gameName', 'gameIcon'],
   data() {
     return {
       gameScores: [],
@@ -50,7 +53,8 @@ export default {
     }
   },
   components: {
-    // domyślnie tu ma być rzeczywisty komponent Minigame
+    // MOCK
+    // Domyślnie tu ma być rzeczywisty komponent Minigame
     Minigame: {
       template: '<div>Mock Minigame</div>',
       data() {
@@ -69,7 +73,8 @@ export default {
         },
       }
     },
-    // domyślnie tu ma być rzeczywisty komponent Quiz
+
+    // Domyślnie tu ma być rzeczywisty komponent Quiz
     Quiz: {
       template: '<div>Mock Quiz</div>',
       data() {
@@ -96,6 +101,7 @@ export default {
     },
   },
 
+  // Potrzebne do funkcjonalności modala z bootstrapa
   mounted() {
     let modalElement = document.getElementById('scoreboardModal');
     this.modalInstance = new Modal(modalElement);
@@ -104,7 +110,7 @@ export default {
   methods: {
     // Rozpoczyna minigrę, jeśli quiz został ukończony
     startGame() {
-      // powinno być tak:
+      // Powinno utylizować metodę getQuizStatus(), np.:
       // const isQuizFinished = this.getQuizStatus(this.userName);
       if (this.$refs.quiz.isFinished) {
         this.$refs.minigame.start(this.userName);
@@ -140,6 +146,7 @@ export default {
       return this.$refs.quiz.isFinished[this.userName];
     },
 
+    // Potrzebne do funkcjonalności modala z bootstrapa
     showModal() {
       this.modalInstance.show();
     },
@@ -154,15 +161,26 @@ export default {
   box-sizing: border-box;
 }
 
-.game-icon {
-  border: 1px solid black;
+.game-icon, .game-title {
   border-radius: 10px;
-  cursor: pointer;
-  padding: 10px;
   text-align: center;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0px 0px 13px 0px rgba(80, 78, 82, 0.8);
 }
 
-.btn-primary {
-  margin-top: 20px;
+.game-title {
+  padding: 45px 20px;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.game-icon:hover, .game-title:hover {
+  cursor: pointer;
+  background: rgb(71, 190, 245);
+  box-shadow: 0px 0px 13px 0px rgba(80, 78, 82, 0.8);
+}
+
+.modal-body .table {
+  font-size: 40px;
 }
 </style>

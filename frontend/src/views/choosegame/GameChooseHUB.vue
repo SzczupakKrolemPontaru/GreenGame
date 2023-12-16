@@ -1,12 +1,18 @@
 <template>
-  <h1>Minigry</h1>
-  <div class="game-hub">
-    <GameTile v-for="(game, index) in availableGames" :key="index" :gameName="game.name" />
+  <h1 class="text-center">Minigry</h1>
+  <div class="game-hub container">
+    <div class="row">
+      <div class="col-6" v-for="(game, index) in availableGames" :key="index">
+        <GameTile :gameName="game.name" :gameIcon="game.icon"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import GameTile from '../../components/choosegame/GameTile.vue'
+import GarbageTerrorIcon from '../../assets/choosegame/garbage-terror-icon.png'
+
 export default {
   name: 'GameChooseHUB',
   components: {
@@ -14,12 +20,12 @@ export default {
   },
   data() {
     return {
+      // Na ten moment tak to wygląda
       availableGames: [
-        {name: 'Gra1'},
+        {name: 'Gra1', icon: GarbageTerrorIcon},
         {name: 'Gra2'},
         {name: 'Gra3'},
         {name: 'Gra4'}
-        // na razie tak pozniej sie wstawi dane
       ],
     }
   },
@@ -27,21 +33,9 @@ export default {
 </script>
 
 <style scoped>
-.game-hub {
-  display: grid;
-  font-size: 40px;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px;
-  margin-top: 10px;
-  width: 50%;
-  height: 50%;
-  margin-left: auto;
-  margin-right: auto;
-
-}
-
 h1 {
-  text-align: center;
   font-size: 50px;
-} 
+  margin-top: 200px;
+  margin-bottom: 50px;
+}
 </style>
