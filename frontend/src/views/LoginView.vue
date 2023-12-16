@@ -12,19 +12,13 @@
       New User?
     </button>
   </div>
-<br>
+  <br>
   <div class="card w-50 mx-auto">
     <div class="card-body">
       <div>
         <h3 v-if="isLogin()" class="card-title">Enter your credentials</h3>
         <h3 v-if="isSignUp()" class="card-title">Enter your new account info</h3>
         <form @submit.prevent="submitForm">
-          <div v-if="errors.length">
-            <b>Please correct the following error(s):</b>
-          <ul>
-            <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-          </ul>
-          </div>
           <div class="form-group mb-2">
             <label for="email">Email:</label>
             <input
@@ -66,18 +60,32 @@
             <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Password and password confirm don't match!</p>
 
           </div>
-          <p v-if="this.serverMessage.length > 0">Server error: {{this.serverMessage}}</p>
           <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Submit</button>
         </form>
+        <div v-if="isLoading" class="mt-2 spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </div>
     </div>
   </div>
-
+  <div class="position-fixed bottom-0 start-50 translate-middle-x">
+    <div style="background-color: #C45D64" ref="toastEl" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Server error</strong>
+        <small>Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div style="font-weight: bold" class="toast-body">
+        {{serverMessage}}
+      </div>
+    </div>
+  </div>
 
 </template>
 
 <script>
 import {createUser, signInUser} from "@/firebase/firebase";
+import {Toast} from "bootstrap";
 
 export default {
   name: "LoginView",
@@ -90,9 +98,9 @@ export default {
       emailTouched: false,
       passwordTouched: false,
       confirmTouched: false,
-      errors: [],
       emailRegex: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      serverMessage: ''
+      serverMessage: '',
+      isLoading: false
 
     };
   },
@@ -105,6 +113,7 @@ export default {
       this.emailTouched = false;
       this.passwordTouched = false;
       this.confirmTouched = false;
+      this.serverMessage = '';
     },
     isLogin() {
       return this.type === 'login';
@@ -142,6 +151,7 @@ export default {
     },
     async submitForm() {
       {
+        this.isLoading = true;
         try {
           if (this.type === 'login') {
 
@@ -153,11 +163,20 @@ export default {
                 this.password
             );
           }
+          this.isLoading = false;
           await this.$router.push('/');
         } catch (e) {
+          const toastEl = this.$refs.toastEl;
+          const toast = new Toast(toastEl);
           console.log(e.code);
+          this.isLoading = false;
           this.errorHandling(e);
-          console.log(this.serverMessage);
+          toast.show();
+          setTimeout(() => {
+            if (toast.isShown()) {
+              toast.hide();
+            }
+          }, 4000);
         }
 
 
