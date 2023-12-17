@@ -1,24 +1,23 @@
 <template>
-      <div class="background2"></div>
+  <div class="background2"></div>
   <div class="button-container">
-    <button @click="handleButtonClick"></button>
-    <button @click="handleButton2Click"></button>
+    <button @click="handleButtonClick(1)"></button>
+    <button @click="handleButton2Click(2)"></button>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    handleButtonClick() {
-      this.$router.push({ name: 'choosemode', params: { value: 1 } });
+    handleButtonClick(value) {
+      this.$router.push({ name: 'choosemode', params: { value } });
     },
-    handleButton2Click() {
-      this.$router.push({ name: 'choosemode', params: { value: 2 } });
+    handleButton2Click(value) {
+      this.$router.push({ name: 'choosemode', params: { value } });
     },
   },
 };
 </script>
-
 
 <style>
 .background2 {
