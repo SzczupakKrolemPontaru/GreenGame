@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import MainMenuView from '@/views/MainMenuView.vue';
 import LoginView from '@/views/LoginView.vue';
-import AccountView from '@/views/AccountView.vue';
+import AccountView from '@/views/AccountView.vue'; 
 import GameChooseHUB from '@/views/GameChooseHUB.vue';
 import StartGame from '@/views/StartGame.vue';
 import ChooseMode from '@/views/ChooseMode.vue';
@@ -38,17 +38,14 @@ const routes = [
     path : '/mainmenu',
     name : 'mainmenu',
     props: {
-      userManager: {
+      userManager: [{
         "logout": "/"
-      },
-      userProfile: {
-        'userName': 'marekkox',
+      }],
+      userProfile: [{
+        'userName': 'Maciek',
         'booster': true,
         'level': 4
-      }
-    },
-    meta: {
-      hideNavbar: true,
+      }]
     },
     component : MainMenuView
   },

@@ -3,12 +3,15 @@
     <div class="background3"></div>
     <div class="overlay" :style="{ left: containerPosition.x + 'px', top: containerPosition.y + 'px' }">
       <svg class="svg-object" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
-        <rect x="10" y="30" width="80" height="50" fill="#4CAF50" stroke="#333" stroke-width="2" />
-      </svg>
+    <rect x="10" y="30" width="80" height="50" fill="#4CAF50" stroke="#333" stroke-width="2" />
+    <rect x="10" y="30" width="80" height="5" fill="#4CAF50" stroke="#333" stroke-width="2" />
+    <circle cx="15" cy="55" r="2" fill="#333" />
+    <circle cx="85" cy="55" r="2" fill="#333" />
+  </svg>
     </div>
     <div class="score-display">
-      <p>Score: {{ playerScore }}</p>
-      <p>Time: {{ timer }}s</p>
+      <p>Wynik: {{ playerScore }}</p>
+      <p>Czas: {{ timer }}s</p>
     </div>
     <div v-for="trashItem in trashItems" :key="trashItem.id" class="trash" :style="{ left: trashItem.position.x + 'px', top: trashItem.position.y + 'px' }">
       <svg class="svg-object" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
@@ -17,10 +20,11 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
-  props: ['value'],
+  props: {
+    Value: Number
+  },
   data() {
     return {
       gameEnded: false,
@@ -32,12 +36,14 @@ export default {
       gameNumber: 0,
       containerPosition: { x: 140, y: 470 },
       trashItems: [],
-      timer: 60, 
+      timer: 30, 
       trashInterval: null, 
     };
   },
   methods: {
+    
     setDifficulty() {
+      this.gameEnded = false;
       if (this.value === 1) {
         this.difficultyLevel = 1;
         this.pointsMultiplier = 1;
@@ -114,11 +120,16 @@ export default {
       this.checkCollisions();
     },
     endGame() {
+  if (!this.gameEnded) {
     this.gameEnded = true;
     clearInterval(this.trashInterval);
     const finalScore = this.playerScore;
     alert(`Koniec gry, twój wynik to: ${finalScore}`);
-  },
+    this.timer = 1;
+    this.$router.push({ name: 'gamechoose' });
+  }
+}
+,
   },
   mounted() {
     window.addEventListener('keydown', this.handleKeyPress);
