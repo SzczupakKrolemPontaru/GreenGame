@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div class="background2"></div>
-    <button @click="handleButtonClick">Click me!</button>
-    <button @click="handleButton2Click">Click me too!</button>
+      <div class="background2"></div>
+  <div class="button-container">
+    <button @click="handleButtonClick"></button>
+    <button @click="handleButton2Click"></button>
   </div>
 </template>
 
@@ -10,22 +10,17 @@
 export default {
   methods: {
     handleButtonClick() {
-      this.$router.push({ name: 'mode', params: { value: 1 } });
+      this.$router.push({ name: 'choosemode', params: { value: 1 } });
     },
     handleButton2Click() {
-      this.$router.push({ name: 'mode', params: { value: 2 } });
+      this.$router.push({ name: 'choosemode', params: { value: 2 } });
     },
   },
 };
 </script>
 
-<style>
-#app {
-  position: relative;
-  text-align: center;
-  overflow: hidden;
-}
 
+<style>
 .background2 {
   position: fixed;
   width: 100%;
@@ -36,11 +31,15 @@ export default {
   background-size: cover;
   pointer-events: none;
 }
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 210px;
+}
 
 button {
-  margin-top: 140px;
-  margin-right: 95px;
-  padding: 40px 50px;
+  margin: 0 20px; 
+  padding: 60px 170px;
   font-size: 16px;
   cursor: pointer;
 }

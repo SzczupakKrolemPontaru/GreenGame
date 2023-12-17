@@ -1,19 +1,19 @@
 <template>
-  <div id="app">
+  <div id="app" class="centeredContainer">
     <div class="background"></div>
-    <button @click="handleButtonClick">Click me!</button>
+    <button @click="handleButtonClick"></button>
   </div>
 </template>
 
 <script>
 export default {
-  props:['gameNumber'], //gameNumber mamy od GameChooseHUB
+  props:['gameNumber'],
   mounted() {
   },
   methods: {
     handleButtonClick() {
       this.$router.push({
-        name: 'choosemode',
+        name: 'chooselevel',
       });
     },
   },
@@ -23,10 +23,8 @@ export default {
 <style>
 #app {
   position: relative;
-  text-align: center;
   overflow: hidden;
 }
-
 .background {
   position: fixed;
   width: 100%;
@@ -37,12 +35,17 @@ export default {
   background-size: cover;
   pointer-events: none;
 }
+.centeredContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; 
+}
 
 button {
-  margin-top: 250px; 
+  margin-top: 0px; 
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-
 }
 </style>

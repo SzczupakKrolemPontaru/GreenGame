@@ -139,7 +139,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background: url('../assets/background3.gif') center center no-repeat;
+  background: url('../assets/background4.gif') center center no-repeat;
   background-size: cover;
   pointer-events: none;
 }
