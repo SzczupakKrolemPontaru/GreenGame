@@ -9,7 +9,11 @@ class SessionManager {
     }
 
     createNewSession(player) {
-        const players = [player]; // You can customize player names or get them dynamically
+        const players = [{
+            name: player,
+            score: 0, // Initial score is set to 0
+        }];
+
         const newSession = {
             players: players,
             messages: [], // Array to store messages
@@ -73,6 +77,36 @@ class SessionManager {
                 callback(this.sessions);
             }
         });
+    }
+
+    updatePlayerScoreInSession(sessionId, playerName, newScore) {
+        try {
+            const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
+
+            if (sessionIndex !== -1) {
+                // Found the session
+                const currentSession = this.sessions[sessionIndex];
+
+                // Find the player in the session's players array
+                const playerIndex = currentSession.players.findIndex(player => player.name === playerName);
+
+                if (playerIndex !== -1) {
+                    // Found the player
+                    currentSession.players[playerIndex].score = newScore;
+
+                    // Update the session in the database (if needed)
+                    updateDoc(doc(db, 'sessions', sessionId), { players: currentSession.players });
+
+                    console.log(`Score updated for ${playerName} in Session ID ${sessionId}`);
+                } else {
+                    console.error(`Player "${playerName}" not found in Session ID ${sessionId}`);
+                }
+            } else {
+                console.error(`Session ID ${sessionId} not found`);
+            }
+        } catch (error) {
+            console.error("Error updating player score:", error.message);
+        }
     }
 
     sendMessage(sessionId, messageContent, sender) {

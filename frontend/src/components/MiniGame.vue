@@ -63,6 +63,7 @@ export default {
     },
     updateScore(actions) {
       this.playerScore += actions;
+      this.$emit('updateScore', this.playerScore);
     },
     loadMultiplayerModule() {},
     generateTrash() {

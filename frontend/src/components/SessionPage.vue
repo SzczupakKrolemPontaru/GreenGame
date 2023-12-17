@@ -28,13 +28,17 @@
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
     </div>
   </div>
+  <miniGame v-on:updateScore="updateCurrentScore" />
 </template>
 
 
 <script>
 import { sharedSessionManager } from "@/sessionManager";
-
+import miniGame from "@/components/MiniGame.vue";
 export default {
+  components: {
+    miniGame,
+  },
   name: "LoginPage",
   data: () => ({
     sessions: [],
@@ -43,6 +47,19 @@ export default {
     currentSessionId: null,
   }),
   methods: {
+    async updateCurrentScore(actions) {
+      if(this.username === "") {
+        this.username = "Anonymous";
+      }
+      if(this.currentSessionId === null) {
+        this.currentSessionId = await sharedSessionManager.createNewSession(
+            this.username
+        );
+      }
+      console.log('Updating current score in LoginPage:', actions);
+      this.currentScore = actions;
+      sharedSessionManager.updatePlayerScoreInSession(this.currentSessionId,this.username, this.currentScore);
+    },
     login() {
       this.username = this.credentials
       this.loggedIn = true;
@@ -73,6 +90,8 @@ export default {
       }
     },
   },
+
+
   mounted() {
     sharedSessionManager.subscribeToSessions((sessions) => {
       this.sessions = sessions;

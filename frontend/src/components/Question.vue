@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div>
     <Quiz :questions="questions"/>
@@ -97,3 +98,4 @@ export default {
   },
 };
 </script>
+/* eslint-disable */
