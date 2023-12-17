@@ -50,7 +50,7 @@ export default {
   },
   name: "LoginPage",
   data: () => ({
-    otherPlayerScore: 100,
+    otherPlayerScore: 0,
     sessions: [],
     username: "",
     loggedIn: false,

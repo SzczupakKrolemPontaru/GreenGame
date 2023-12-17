@@ -11,7 +11,7 @@ class SessionManager {
     createNewSession(player) {
         const players = [{
             name: player,
-            score: 100, // Initial score is set to 0
+            score: 0, // Initial score is set to 0
         }];
 
         const newSession = {
@@ -39,7 +39,7 @@ class SessionManager {
                 const currentSession = this.sessions[sessionIndex];
                 const updatedSession = {
                     ...currentSession,
-                    players: [...currentSession.players, { name: player, score: 100 }],
+                    players: [...currentSession.players, { name: player, score: 0 }],
                 };
 
                 // Update the session in the sessions array
