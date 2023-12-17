@@ -18,6 +18,9 @@
 
     <div v-else>
       <div v-if="currentQuestionIndex < questions.length" class="question-card">
+        <div class="alert alert-danger" role="alert" v-if="showAlert">
+        Udało ci się wykonać Quiz!
+        </div>
         <h3>{{ questions[currentQuestionIndex].text }}</h3>
         <div class="answer-options">
           <div
@@ -43,6 +46,9 @@
         <button @click="resetQuiz">Wybierz następny Quiz!</button>
       </div>
     </div>
+
+    
+
   </div>
 </template>
 
@@ -66,6 +72,7 @@ export default {
       ],
       selectedBoxId: null,
       answered: false,
+      //showAlert: false,
     };
   },
   methods: {
@@ -115,10 +122,12 @@ export default {
   watch: {
     score(){
       if (this.score === 5) {
-        console.log('Udało Ci sie wykonać Quiz') // dodaj tutaj jakiś popup/modal w momencie wykonania poprawnie quizu moze byc cokolwiek i dopiero pozniej pusznij router na gamechoosehub
-        this.$router.push({
-          name: 'gamechoose',
-        })
+        this.showAlert = true;
+        setTimeout(() => {
+          this.showAlert = false; 
+          this.$router.push({ name: 'gamechoose' });
+        }, 3000);
+        
       }
     
     }
@@ -237,5 +246,25 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+.popup-content {
+  text-align: center;
+  font-size: 18px;
+}
+
 </style>
 /* eslint-disable */
