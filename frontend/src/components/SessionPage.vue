@@ -9,8 +9,8 @@
       <button @click="createNewSession" class="btn btn-success">Stwórz nową sesję</button>
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
-          <text>Session ID: {{ session.id }}</text><br/>
-          <text>Players:</text>
+          <text>ID sesji: {{ session.id }}</text><br/>
+          <text>Gracz:</text>
           <div v-for="player in session.players" :key="player.name">
             <text>{{ player.name }}</text>
           </div>
@@ -21,7 +21,7 @@
     <div v-if="loggedIn && currentSessionId !== null">
       <div v-for="session in sessions" :key="session.id">
         <div v-if="session.id === currentSessionId">
-          <p class="mt-3">Messages for Session ID {{ currentSessionId }}:</p>
+          <p class="mt-3">wiadomości dla sesji {{ currentSessionId }}:</p>
           <div v-for="message in session.messages" :key="message.id">
             <p>{{ message.sender }}: {{ message.content }}</p>
           </div>
