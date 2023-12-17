@@ -38,7 +38,7 @@
       </div>
       <div v-else class="result-card">
         <h3>Wynik: {{ score }} / {{ questions.length }}</h3>
-        <p v-if="score > 5">Gratulacje!</p>
+        <p v-if="score === 5">Gratulacje!</p>
         <p v-else>Niestety, nie udało się.</p>
         <button @click="resetQuiz">Wybierz następny Quiz!</button>
       </div>
@@ -112,6 +112,17 @@ export default {
       this.answered = false;
     },
   },
+  watch: {
+    score(){
+      if (this.score === 5) {
+        console.log('Udało Ci sie wykonać Quiz') // dodaj tutaj jakiś popup/modal w momencie wykonania poprawnie quizu moze byc cokolwiek i dopiero pozniej pusznij router na gamechoosehub
+        this.$router.push({
+          name: 'gamechoose',
+        })
+      }
+    
+    }
+  }
 };
 </script>
 

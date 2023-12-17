@@ -1,6 +1,6 @@
 <template>
   <div class="game-tile">
-    <div class="game-container" @click="startGame">
+    <div class="game-container" @click="startGame" >
       <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon" />
       <h2 class="game-title" v-else>{{ gameName }}</h2>
     </div>
@@ -44,7 +44,7 @@ import {Modal} from "bootstrap";
 
 export default {
   name: 'GameTile',
-  props: ['gameName', 'gameIcon'],
+  props: ['gameName', 'gameIcon', 'isButtonEnabled'],
   data() {
     return {
       gameScores: [],
@@ -118,7 +118,7 @@ export default {
     startGame() {
       // Powinno utylizować metodę getQuizStatus(), np.:
       // const isQuizFinished = this.getQuizStatus(this.userName);
-      if (this.$refs.quiz.isFinished) {
+      if (this.$refs.quiz.isFinished && this.isButtonEnabled) {
         this.$refs.minigame.start(this.userName);
       } else {
         this.displayMessage('Najpierw ukończ quiz');
