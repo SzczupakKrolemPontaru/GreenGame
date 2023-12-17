@@ -62,6 +62,7 @@ export default {
     },
     updateScore(actions) {
       this.playerScore += actions;
+      this.$emit('updateScore', this.playerScore);
     },
     generateTrash() {
       this.trashInterval = setInterval(() => {

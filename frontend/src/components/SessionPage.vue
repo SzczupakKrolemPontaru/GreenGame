@@ -1,5 +1,5 @@
 <template>
-  <div class="standard_text">
+  <div class="standard_text" v-if="!start">
     <div v-if="!loggedIn">
       <input v-model="credentials" type="text" placeholder="your username" />
       <button @click="login" class="btn btn-primary">Login</button>
@@ -9,8 +9,11 @@
       <button @click="createNewSession" class="btn btn-success">Create New Session</button>
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
-          <text>Session ID: {{ session.id }}</text>
-          <div><text>Players: {{ session.players}}</text></div>
+          <text>Session ID: {{ session.id }}</text><br/>
+          <text>Players:</text>
+          <div v-for="player in session.players" :key="player.name">
+            <text>{{ player.name }}</text>
+          </div>
           <button @click="joinSession(session.id)" class="btn btn-info">Join Session</button>
         </div>
       </div>
@@ -26,6 +29,13 @@
       </div>
       <button @click="sendMessage" class="btn btn-primary mt-3">Send Message</button>
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
+      <button @click="startGame" class="btn btn-success mt-3">Start Game</button>
+    </div>
+  </div>
+  <div v-if="this.start">
+    <miniGame v-on:updateScore="updateCurrentScore" />
+    <div class="otherScore">
+      <p>Other player score: {{ displayOtherPlayerScore }}</p>
     </div>
   </div>
 </template>
@@ -33,16 +43,33 @@
 
 <script>
 import { sharedSessionManager } from "@/sessionManager";
-
+import miniGame from "@/components/MiniGame.vue";
 export default {
+  components: {
+    miniGame,
+  },
   name: "LoginPage",
   data: () => ({
+    otherPlayerScore: 100,
     sessions: [],
-    username: "", // Added username property
-    loggedIn: false, // Added loggedIn property
+    username: "",
+    loggedIn: false,
     currentSessionId: null,
+    start: false,
   }),
+  computed: {
+    displayOtherPlayerScore() {
+      return this.otherPlayerScore;
+    },
+  },
   methods: {
+    startGame() {
+      this.start = true;
+    },
+    async updateCurrentScore(actions) {
+      this.currentScore = actions;
+      sharedSessionManager.updatePlayerScoreInSession(this.currentSessionId,this.username, this.currentScore);
+    },
     login() {
       this.username = this.credentials
       this.loggedIn = true;
@@ -55,10 +82,25 @@ export default {
       } catch (error) {
         console.error("Error creating new session:", error.message);
       }
+      this.unsubscribePlayerScore = sharedSessionManager.listenToPlayerScore(
+          this.currentSessionId,
+          this.username,
+          (score) => {
+            this.otherPlayerScore = score;
+          }
+      );
     },
     joinSession(sessionId) {
       sharedSessionManager.joinSession(sessionId, this.username);
       this.currentSessionId = sessionId;
+
+      this.unsubscribePlayerScore = sharedSessionManager.listenToPlayerScore(
+          this.currentSessionId,
+          this.username,
+          (score) => {
+            this.otherPlayerScore = score;
+          }
+      );
     },
     async sendMessage() {
       try {
@@ -73,6 +115,7 @@ export default {
       }
     },
   },
+
   mounted() {
     sharedSessionManager.subscribeToSessions((sessions) => {
       this.sessions = sessions;
@@ -80,7 +123,6 @@ export default {
   },
   // Make sure to stop listening when the component is destroyed
   beforeUnmount() {
-    sharedSessionManager.deleteSession(this.currentSessionId)
     sharedSessionManager.stopListeningToSessions();
   },
 };
@@ -93,5 +135,16 @@ export default {
 }
 .standard_text {
   font-size: 25px;
+}
+
+.otherScore {
+  font-size: 50px;
+  font-weight: bold;
+  background: #2c3e50;
+  color: #fff; /* Kolor tekstu na tle niebieskiego /
+  padding: 10px; / Dodatkowy odstęp wewnątrz elementu dla lepszego wyglądu */
+  position: fixed;
+  top: 0;
+  right: 0;
 }
 </style>

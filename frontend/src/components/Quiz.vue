@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="quiz-container">
     <div v-if="isOnTitlePage" class="title-page">
@@ -226,3 +227,4 @@ button:hover {
   background-color: #0056b3;
 }
 </style>
+/* eslint-disable */
