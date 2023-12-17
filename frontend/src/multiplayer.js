@@ -1,8 +1,8 @@
-// sessionManager.js
+// multiplayer.js
 import {db} from "@/firebase/firebase";
 import {onSnapshot, collection, addDoc, deleteDoc, doc, updateDoc} from "firebase/firestore";
 
-class SessionManager {
+class Multiplayer {
     constructor() {
         this.sessions = [];
         this.unsubscribe = null;
@@ -150,6 +150,35 @@ class SessionManager {
             console.error("Error deleting session:", error.message);
         }
     }
+    listenToPlayerScore(sessionId, playerName, callback) {
+        try {
+            const sessionDocRef = doc(db, 'sessions', sessionId);
+
+            // Set up a Firestore listener
+            const unsubscribe = onSnapshot(sessionDocRef, (doc) => {
+                const sessionData = doc.data();
+
+                if (sessionData) {
+                    const player = sessionData.players.find((player) => player.name !== playerName);
+
+                    if (player) {
+                        // Invoke the callback with the updated player score
+                        callback(player.score);
+                    } else {
+                        console.error(`There is no other players in session:  ${sessionId}`);
+                    }
+                } else {
+                    console.error(`Session ID ${sessionId} not found`);
+                }
+            });
+
+            // Return the unsubscribe function to allow stopping the listener later
+            return unsubscribe;
+        } catch (error) {
+            console.error("Error listening to player score:", error.message);
+        }
+    }
+
 
     // Add a method to stop listening to sessions when needed
     stopListeningToSessions() {
@@ -159,7 +188,7 @@ class SessionManager {
     }
 }
 
-// Create a single instance of SessionManager
-const sharedSessionManager = new SessionManager();
+// Create a single instance of Multiplayer
+const sharedSessionManager = new Multiplayer();
 
 export {sharedSessionManager};
