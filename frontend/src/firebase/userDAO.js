@@ -1,6 +1,7 @@
 import {db} from "@/firebase/firebase";
 import {doc, getDoc, setDoc} from "firebase/firestore"
 import {store} from "@/store";
+import {createCharacterDocument} from "@/firebase/characterDAO";
 
 export const createUserDocument = async (userCredentials, additionalUserData) => {
     if (!userCredentials || !userCredentials.user) {
@@ -25,25 +26,42 @@ export const createUserDocument = async (userCredentials, additionalUserData) =>
         } catch (e) {
             console.log('Error when creating user ', e);
         }
+        await createCharacterDocument(userCredentials.user.uid, additionalUserData);
+
     } else {
         throw new Error('User already exists!');
     }
 }
 
-export const getUserDocument = async (user) => {
+export const getUserObject = async (userUID) => {
+
+    if(!userUID) {
+        return null;
+    }
+    const userRef = doc(db, `users/${userUID}`)
+    const userSnapshot = await getDoc(userRef);
+    if(!userSnapshot.exists()) {
+        return null;
+    }
+    console.log("Snapshot: ", userSnapshot.data());
+    const user = userSnapshot.data();
+    user.uid = userUID;
+    return user;
+
+}
+
+export const storeUserObject = async (user) => {
 
     if(!user || !user.uid) {
         store.user = null;
     } else {
-        const userRef = doc(db, `users/${user.uid}`)
-        const userSnapshot = await getDoc(userRef);
-
-        if(!userSnapshot.exists()) {
-            throw new Error('User account does not exist!');
+        let newUser = await getUserObject(user.uid);
+        if (newUser == null) {
+            newUser = {};
+            newUser.email = user.email;
+            newUser.uid = user.uid;
         }
-        console.log("Snapshot: ", userSnapshot.data());
-        store.user = userSnapshot.data();
-        store.user.uid = user.uid;
+        store.user = newUser;
     }
     console.log('User changed to: ', store.user);
 

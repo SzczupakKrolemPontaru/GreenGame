@@ -1,5 +1,27 @@
 import {db} from "@/firebase/firebase";
-import {collection, getDocs, query, where} from "firebase/firestore";
+import {collection, addDoc, getDocs, query, where} from "firebase/firestore";
+
+
+export const createCharacterDocument = async (userUID, additionalUserData) => {
+    if (!userUID || !additionalUserData) {
+        return;
+    }
+    const {name} = additionalUserData;
+    try {
+        const docRef = await addDoc(collection(db, "characters"), {
+            nickname: name,
+            level: 1,
+            expPoints: 0,
+            hatID: 0,
+            progressBoosted: false,
+            userUID: userUID
+        });
+        console.log("Character saved with ID: ", docRef.id);
+    } catch (e) {
+        console.log('Error when creating character: ', e);
+    }
+
+}
 
 
 export const getCharacterByUser = async (userUID) => {

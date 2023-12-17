@@ -1,11 +1,11 @@
 <template>
 <div>
-  <h1>Account info</h1>
+  <h1>Dane konta</h1>
   <h3 v-if="user && user.email">Email: {{user.email}}</h3>
-  <h3 v-if="user && user.name !== null">Name: {{user.name}}</h3>
+  <h3 v-if="user && user.name !== null && user.name !== undefined">Imię: {{user.name}}</h3>
   <div>
     <button v-if="user" class="btn btn-lg btn-outline-dark" @click="this.logout">
-    Logout
+    Wyloguj się
   </button>
   </div>
 
@@ -26,7 +26,6 @@ export default {
     const logout = async () => {
 
       await logOutUser();
-      store.user = null;
       await router.push('/');
     }
 

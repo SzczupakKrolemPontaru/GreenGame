@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import {logOutUser} from "@/firebase/auth";
+
 export default {
   name: 'MainMenu',
   props: {
@@ -111,7 +113,8 @@ export default {
     }
   },
   methods: {
-    logout() {
+    async logout() {
+      await logOutUser();
       this.$router.push({
         name: 'login'
       })

@@ -1,23 +1,23 @@
 <template>
   <div class="centered-container" v-if="isSignUp()">
-    <h1>Create an account</h1>
+    <h1>Stwórz konto</h1>
     <button v-on:click="changeType('login')" class="btn btn-sm btn-outline-dark">
-      Returning user?
+      Masz już konto?
     </button>
   </div>
 
   <div class="centered-container" v-if="isLogin()">
-    <h1>Sign In</h1>
+    <h1>Zaloguj się</h1>
     <button v-on:click="changeType('signup')" class="btn btn-sm btn-outline-dark">
-      New User?
+      Nie masz jeszcze konta?
     </button>
   </div>
   <br>
   <div class="card w-50 mx-auto">
     <div class="card-body">
       <div>
-        <h3 v-if="isLogin()" class="card-title">Enter your credentials</h3> <!-- Przypominam tylko że cała aplikacja ma być po polsku i przeznaczona jest na małych dzieci poniżej 10 roku życia-->
-        <h3 v-if="isSignUp()" class="card-title">Enter your new account info</h3>
+        <h3 v-if="isLogin()" class="card-title">Wprowadź dane konta</h3> <!-- Przypominam tylko że cała aplikacja ma być po polsku i przeznaczona jest na małych dzieci poniżej 10 roku życia-->
+        <h3 v-if="isSignUp()" class="card-title">Podaj dane nowego konta</h3>
         <form @submit.prevent="submitForm">
           <div class="form-group mb-2">
             <label for="email">Email:</label>
@@ -26,58 +26,58 @@
                 id="email"
                 v-model="email"
                 class="form-control form-control-lg"
-                placeholder="Enter your email"
+                placeholder="Tutaj wprowadź email"
                 :class="{'is-invalid': isEmailInvalid() && this.emailTouched}"
                 @blur="setEmailTouched"
             />
-            <p class="invalid-feedback" v-if="isEmailInvalid()">Provide a valid email address!</p>
+            <p class="invalid-feedback" v-if="isEmailInvalid()">Wpisz poprawny adres email.</p>
           </div>
 
           <div v-if="isSignUp()" class="form-group mb-2">
-            <label for="name">Name:</label>
+            <label for="name">Imię:</label>
             <input
                 type="text"
                 id="name"
                 v-model="name"
                 class="form-control form-control-lg"
-                placeholder="Enter your name"
+                placeholder="Tutaj wprowadź imię"
                 :class="{'is-invalid': isNameInvalid() && this.nameTouched}"
                 @blur="setNameTouched"
             />
-            <p class="invalid-feedback" v-if="isEmailInvalid()">Name has to be at least 3 characters long!</p>
+            <p class="invalid-feedback" v-if="isEmailInvalid()">Imię musi mieć przynajmniej 3 znaki.</p>
           </div>
 
           <div class="form-group mb-2">
-            <label class="text-lg-start" for="password">Password:</label>
+            <label class="text-lg-start" for="password">Hasło:</label>
             <input
                 type="password"
                 id="password"
                 v-model="password"
                 class="form-control form-control-lg"
-                placeholder="Enter your password"
+                placeholder="Tutaj podaj hasło"
                 :class="{'is-invalid': isPasswordInvalid() && this.passwordTouched}"
                 @blur="setPasswordTouched"
             />
-            <p class="invalid-feedback" v-if="isPasswordInvalid()">Password has to be at least 8 characters long!</p>
+            <p class="invalid-feedback" v-if="isPasswordInvalid()">Hasło musi mieć przynajmniej 8 znaków.</p>
           </div>
           <div  v-if="isSignUp()" class="form-group mb-2">
-            <label for="password">Confirm password:</label>
+            <label for="password">Potwierdź hasło:</label>
             <input
                 type="password"
                 id="passwordConfirm"
                 v-model="passwordConfirm"
                 class="form-control form-control-lg"
-                placeholder="Confirm your password"
+                placeholder="Tutaj powtórz hasło"
                 :class="{'is-invalid': isPasswordConfirmInvalid() && this.confirmTouched}"
                 @blur="setConfirmTouched"
             />
-            <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Password and password confirm don't match!</p>
+            <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Wpisane hasła różnią się.</p>
 
           </div>
-          <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Submit</button>
+          <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Wyślij</button>
         </form>
         <div v-if="isLoading" class="mt-2 spinner-border" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">Ładowanie...</span>
         </div>
       </div>
     </div>
@@ -85,8 +85,8 @@
   <div class="position-fixed bottom-0 start-50 translate-middle-x">
     <div style="background-color: #C45D64" ref="toastEl" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
-        <strong class="me-auto">Server error</strong>
-        <small>Just now</small>
+        <strong class="me-auto">Błąd serwera</strong>
+        <small>Teraz</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div style="font-weight: bold" class="toast-body">
@@ -175,15 +175,6 @@ export default {
       return !(this.isEmailInvalid() || this.isPasswordInvalid()
           || this.isPasswordConfirmInvalid() || this.isNameInvalid());
     },
-    login() {
-      this.$router.push({
-          name: 'mainmenu',
-          params: {
-            email: this.email
-            // do zmiany, mail moze byc, ale przekazywany paramsami musi byc username w celu pobrani danych z bazy
-          }
-        })
-    },
     async submitForm() {
       {
         this.isLoading = true;
@@ -201,7 +192,7 @@ export default {
 
           }
           this.isLoading = false;
-          await this.$router.push('/');
+          await this.$router.push('/mainmenu');
         } catch (e) {
           const toastEl = this.$refs.toastEl;
           const toast = new Toast(toastEl);
@@ -225,17 +216,19 @@ export default {
       console.log(e)
       switch (e.code) {
         case 'auth/invalid-credential':
-          this.serverMessage = 'This account does not exist';
+          this.serverMessage = 'To konto nie istnieje';
           break;
         case 'auth/wrong-password':
-          this.serverMessage = 'Wrong password';
+          this.serverMessage = 'Niepoprawne hasło';
           break;
         case 'auth/network-request-failed':
-          this.serverMessage = 'Check your network connection!';
+          this.serverMessage = 'Sprawdź połączenie sieciowe!';
           break;
-
+        case 'auth/email-already-in-use':
+          this.serverMessage = 'Ten adres email jest już w użyciu!';
+          break;
         default:
-          this.serverMessage= 'Case ${e.message} is not yet implemented';
+          this.serverMessage= `Nieznany błąd ${e.message}`;
       }
 
     }
