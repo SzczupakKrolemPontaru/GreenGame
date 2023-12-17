@@ -9,8 +9,8 @@ import StartGame from '@/views/StartGame.vue';
 import ChooseMode from '@/views/ChooseMode.vue';
 import ChooseLevel from '@/views/ChooseLevel.vue';
 import MiniGame from '@/components/MiniGame.vue';
-import QuizView from '@/components/Quiz.vue';
-//import SessionPage from '@/components/SessionPage.vue'
+import QuizView from '@/views/QuizView.vue';
+import SessionPage from "@/components/SessionPage.vue";
 
 
 const routes = [
@@ -79,11 +79,11 @@ const routes = [
     name : 'minigame',
     component : MiniGame
   },
- /* {
+  {
     path : '/session',
     name : 'session',
     component : SessionPage
-  }*/
+  }
 
 ]
 
