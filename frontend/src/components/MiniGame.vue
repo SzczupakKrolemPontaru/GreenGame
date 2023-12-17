@@ -23,6 +23,7 @@ export default {
   props: ['value'],
   data() {
     return {
+      gameEnded: false,
       difficultyLevel: 0,
       playerScore: 0,
       pointsMultiplier: 1,
@@ -45,8 +46,9 @@ export default {
         this.pointsMultiplier = 2;
       }
     },
+    
     handleKeyPress(event) {
-      const step = 15;
+      const step = 25;
       if (event.key === 'd') {
         this.containerPosition.x += step;
       } else if (event.key === 'a') {
@@ -54,11 +56,11 @@ export default {
       }
     },
     updateTimer() {
-      if (this.timer > 0) {
-        this.timer -= 1;
-      } else {
-        clearInterval(this.trashInterval);
-      }
+  if (this.timer > 0) {
+    this.timer -= 1;
+  } else {
+    this.endGame();
+  }
     },
     updateScore(actions) {
       this.playerScore += actions;
@@ -82,21 +84,20 @@ export default {
       };
 
       this.trashItems.forEach((trashItem, index) => {
-        trashItem.position.y += 10;
+        trashItem.position.y += 6;
 
         const trashBounds = {
           left: trashItem.position.x,
-          right: trashItem.position.x ,
+          right: trashItem.position.x + 30 ,
           top: trashItem.position.y,
-          bottom: trashItem.position.y ,
+          bottom: trashItem.position.y + 10 ,
         };
-        
+    
         const trashInContainer =
-    trashBounds.right >= containerBounds.left &&
-    trashBounds.left <= containerBounds.right &&
-    trashBounds.bottom >= containerBounds.top &&
-    trashBounds.top <= containerBounds.bottom;
-
+        trashBounds.right >= containerBounds.left &&
+        trashBounds.left <= containerBounds.right &&
+        trashBounds.bottom >= containerBounds.top &&
+        trashBounds.top <= containerBounds.bottom;
 
         const trashFell = trashBounds.bottom > window.innerHeight;
 
@@ -112,6 +113,12 @@ export default {
     updateTrashPositions() {
       this.checkCollisions();
     },
+    endGame() {
+    this.gameEnded = true;
+    clearInterval(this.trashInterval);
+    const finalScore = this.playerScore;
+    alert(`Koniec gry, twój wynik to: ${finalScore}`);
+  },
   },
   mounted() {
     window.addEventListener('keydown', this.handleKeyPress);
