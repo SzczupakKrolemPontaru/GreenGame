@@ -1,5 +1,5 @@
 // sessionManager.js
-import {db} from "@/firebaseConfig";
+import {db} from "@/firebase/firebase";
 import {onSnapshot, collection, addDoc, deleteDoc, doc, updateDoc} from "firebase/firestore";
 
 class SessionManager {
