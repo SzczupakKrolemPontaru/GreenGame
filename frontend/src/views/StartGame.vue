@@ -13,7 +13,7 @@ export default {
   methods: {
     handleButtonClick() {
       this.$router.push({
-        name: 'chooselevel',
+        name: 'chooselevel'
       });
     },
   },

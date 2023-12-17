@@ -2,7 +2,7 @@
   <div>
     <div class="background4"></div>
     <div class="button-container">
-      <button @click="handleButtonClick"></button>
+      <button @click="handleButtonClick()"></button>
       <button @click="handleButton2Click"></button>
     </div>
   </div>

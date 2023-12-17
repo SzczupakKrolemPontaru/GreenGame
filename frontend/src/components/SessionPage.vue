@@ -1,41 +1,41 @@
 <template>
   <div class="standard_text" v-if="!start">
     <div v-if="!loggedIn">
-      <input v-model="credentials" type="text" placeholder="your username" />
-      <button @click="login" class="btn btn-primary">Login</button>
+      <input v-model="credentials" type="text" placeholder="twój nick" />
+      <button @click="login" class="btn btn-primary">Graj</button>
     </div>
     <div v-if="loggedIn && currentSessionId === null">
-      <div class ="header_class"><header>Welcome {{ this.username }} !</header></div>
-      <button @click="createNewSession" class="btn btn-success">Create New Session</button>
+      <div class ="header_class"><header>Witaj {{ this.username }} !</header></div>
+      <button @click="createNewSession" class="btn btn-success">Stwórz nową sesję</button>
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
-          <text>Session ID: {{ session.id }}</text><br/>
-          <text>Players:</text>
+          <text>ID sesji: {{ session.id }}</text><br/>
+          <text>Gracz:</text>
           <div v-for="player in session.players" :key="player.name">
             <text>{{ player.name }}</text>
           </div>
-          <button @click="joinSession(session.id)" class="btn btn-info">Join Session</button>
+          <button @click="joinSession(session.id)" class="btn btn-info">Dołącz do sesji</button>
         </div>
       </div>
     </div>
     <div v-if="loggedIn && currentSessionId !== null">
       <div v-for="session in sessions" :key="session.id">
         <div v-if="session.id === currentSessionId">
-          <p class="mt-3">Messages for Session ID {{ currentSessionId }}:</p>
+          <p class="mt-3">wiadomości dla sesji {{ currentSessionId }}:</p>
           <div v-for="message in session.messages" :key="message.id">
             <p>{{ message.sender }}: {{ message.content }}</p>
           </div>
         </div>
       </div>
-      <button @click="sendMessage" class="btn btn-primary mt-3">Send Message</button>
+      <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
-      <button @click="startGame" class="btn btn-success mt-3">Start Game</button>
+      <button @click="startGame" class="btn btn-success mt-3">Rozpocznij grę</button>
     </div>
   </div>
   <div v-if="this.start">
     <miniGame v-on:updateScore="updateCurrentScore" />
     <div class="otherScore">
-      <p>Other player score: {{ displayOtherPlayerScore }}</p>
+      <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
     </div>
   </div>
 </template>
