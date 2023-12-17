@@ -24,7 +24,11 @@
     <div class="col-6">
       <div class="row h-100">
         <div class="col-4">
+          <div class="row h-100 align-items-center">
+            <div class="col">
           <img class="arrow" src="@/assets/MainMenu/buttons/left_arrow.svg" alt="Arrow Left" id="arrowButton" style="height: 100%;" @click="changeHat(-1)" />
+            </div>
+          </div>
                 </div>
         <div class="col-4 d-flex justify-content-center">
           <img class="hat d-flex d-inline-block order-first img-fluid" alt="hat" :src="require(`@/assets/MainMenu/hats/${displayHat}`)"/>
@@ -34,16 +38,22 @@
           <p class="h2 d-flex d-inline-block level">level: {{ displayLevel }}</p>
               </div>
         <div class="col-4">
+          <div class="row h-100 align-items-center">
+            <div class="col">
           <img class="arrow" src="@/assets/MainMenu/buttons/right_arrow.svg" alt="Arrow Right" id="arrowButton" style="height: 100%;" @click="changeHat(1)" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="col-3">
 
+      <v-btn @click="logout">
       <button type="button" class="btn btn-primary button-logout">
-              <v-btn @click="logout">Log Out</v-btn>
+          Log Out
           </button>
+      </v-btn>
 
       <div class="row h-40">
         <div class="col">
