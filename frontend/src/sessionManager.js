@@ -11,7 +11,7 @@ class SessionManager {
     createNewSession(player) {
         const players = [{
             name: player,
-            score: 0, // Initial score is set to 0
+            score: 100, // Initial score is set to 0
         }];
 
         const newSession = {
@@ -39,7 +39,7 @@ class SessionManager {
                 const currentSession = this.sessions[sessionIndex];
                 const updatedSession = {
                     ...currentSession,
-                    players: [...currentSession.players, { name: player, score: 0 }],
+                    players: [...currentSession.players, { name: player, score: 100 }],
                 };
 
                 // Update the session in the sessions array
@@ -150,6 +150,35 @@ class SessionManager {
             console.error("Error deleting session:", error.message);
         }
     }
+    listenToPlayerScore(sessionId, playerName, callback) {
+        try {
+            const sessionDocRef = doc(db, 'sessions', sessionId);
+
+            // Set up a Firestore listener
+            const unsubscribe = onSnapshot(sessionDocRef, (doc) => {
+                const sessionData = doc.data();
+
+                if (sessionData) {
+                    const player = sessionData.players.find((player) => player.name !== playerName);
+
+                    if (player) {
+                        // Invoke the callback with the updated player score
+                        callback(player.score);
+                    } else {
+                        console.error(`There is no other players in session:  ${sessionId}`);
+                    }
+                } else {
+                    console.error(`Session ID ${sessionId} not found`);
+                }
+            });
+
+            // Return the unsubscribe function to allow stopping the listener later
+            return unsubscribe;
+        } catch (error) {
+            console.error("Error listening to player score:", error.message);
+        }
+    }
+
 
     // Add a method to stop listening to sessions when needed
     stopListeningToSessions() {
