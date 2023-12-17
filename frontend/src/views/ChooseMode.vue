@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  props: ['value'],
   methods: {
     handleButtonClick() {
       this.$router.push({ name: 'minigame', params: { value: 1 } });

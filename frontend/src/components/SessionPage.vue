@@ -34,6 +34,9 @@
   </div>
   <div v-if="this.start">
     <miniGame v-on:updateScore="updateCurrentScore" />
+    <div class="otherScore">
+      <p>Other player score: {{ displayOtherPlayerScore }}</p>
+    </div>
   </div>
 </template>
 
@@ -47,12 +50,18 @@ export default {
   },
   name: "LoginPage",
   data: () => ({
+    otherPlayerScore: 0,
     sessions: [],
     username: "",
     loggedIn: false,
     currentSessionId: null,
     start: false,
   }),
+  computed: {
+    displayOtherPlayerScore() {
+      return this.otherPlayerScore;
+    },
+  },
   methods: {
     startGame() {
       this.start = true;
@@ -73,10 +82,25 @@ export default {
       } catch (error) {
         console.error("Error creating new session:", error.message);
       }
+      this.unsubscribePlayerScore = sharedSessionManager.listenToPlayerScore(
+          this.currentSessionId,
+          this.username,
+          (score) => {
+            this.otherPlayerScore = score;
+          }
+      );
     },
     joinSession(sessionId) {
       sharedSessionManager.joinSession(sessionId, this.username);
       this.currentSessionId = sessionId;
+
+      this.unsubscribePlayerScore = sharedSessionManager.listenToPlayerScore(
+          this.currentSessionId,
+          this.username,
+          (score) => {
+            this.otherPlayerScore = score;
+          }
+      );
     },
     async sendMessage() {
       try {
@@ -111,5 +135,16 @@ export default {
 }
 .standard_text {
   font-size: 25px;
+}
+
+.otherScore {
+  font-size: 50px;
+  font-weight: bold;
+  background: #2c3e50;
+  color: #fff; /* Kolor tekstu na tle niebieskiego /
+  padding: 10px; / Dodatkowy odstęp wewnątrz elementu dla lepszego wyglądu */
+  position: fixed;
+  top: 0;
+  right: 0;
 }
 </style>
