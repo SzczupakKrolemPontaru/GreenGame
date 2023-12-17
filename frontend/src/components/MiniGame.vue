@@ -75,40 +75,44 @@ export default {
       }, 2000);
     },
     checkCollisions() {
-      const containerBounds = {
-        left: this.containerPosition.x,
-        right: this.containerPosition.x + 80,
-        top: this.containerPosition.y,
-        bottom: this.containerPosition.y + 50,
-      };
+  const containerBounds = {
+    left: this.containerPosition.x,
+    right: this.containerPosition.x + 80,
+    top: this.containerPosition.y,
+    bottom: this.containerPosition.y + 50,
+  };
 
-      this.trashItems.forEach((trashItem, index) => {
-        const trashBounds = {
-          left: trashItem.position.x,
-          right: trashItem.position.x + 30,
-          top: trashItem.position.y,
-          bottom: trashItem.position.y + 30,
-        };
+  this.trashItems.forEach((trashItem, index) => {
+    const trashBounds = {
+      left: trashItem.position.x,
+      right: trashItem.position.x + 30,
+      top: trashItem.position.y,
+      bottom: trashItem.position.y + 30,
+    };
 
-        if (
-          trashBounds.right > containerBounds.left &&
-          trashBounds.left < containerBounds.right &&
-          trashBounds.bottom > containerBounds.top &&
-          trashBounds.top < containerBounds.bottom
-        ) {
-          // Śmieć trafił do kontenera
-          this.updateScore(1 * this.pointsMultiplier); // Dodaj punkty z uwzględnieniem mnożnika
-          this.trashItems.splice(index, 1);
-        } else if (trashBounds.bottom > window.innerHeight) {
-          // Śmieć spadł na ziemię
-          this.updateScore(-1 * this.pointsMultiplier); // Odejmij punkty z uwzględnieniem mnożnika
-          this.trashItems.splice(index, 1);
-        }
-      });
-    },
+    const trashInContainer =
+      trashBounds.right > containerBounds.left &&
+      trashBounds.left < containerBounds.right &&
+      trashBounds.bottom > containerBounds.top &&
+      trashBounds.top < containerBounds.bottom;
+
+    const trashFell = trashBounds.bottom > window.innerHeight;
+
+    if (trashInContainer) {
+      // Śmieć trafił do kontenera
+      this.updateScore(1 * this.pointsMultiplier); // Dodaj punkty z uwzględnieniem mnożnika
+      this.trashItems.splice(index, 1);
+    } else if (trashFell) {
+      // Śmieć spadł na ziemię
+      this.updateScore(-1 * this.pointsMultiplier); // Odejmij punkty z uwzględnieniem mnożnika
+      this.trashItems.splice(index, 1);
+    }
+  });
+},
+
     updateTrashPositions() {
       this.trashItems.forEach((trashItem) => {
-        trashItem.position.y += 10; // Zwiększono wartość z 2 na 5, dostosuj według potrzeb
+        trashItem.position.y += 2; 
       });
 
       this.checkCollisions();
