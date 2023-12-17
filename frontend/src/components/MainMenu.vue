@@ -2,13 +2,13 @@
   <div class="row flex-grow-1">
 
     <div class="col-3">
-      <div class="h1 score-board-title">TOP 10 Scoreboard</div>
+      <div class="h1 score-board-title">Tablica najlepszych graczy</div>
       <table class="table-view h3" style="background-color:rgba(0, 0, 0, 0);">
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Nick</th>
-            <th scope="col">score</th>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Punkty</th>
           </tr>
         </thead>
         <tbody>
@@ -35,7 +35,7 @@
           <img alt="player" class="d-flex d-inline-block order-last player" :src="require(`@/assets/MainMenu/character/${displayPlayer}`)" />
           <button v-if="hatToDisplay !== currentHat" @click="saveChanges" class="btn btn-success d-flex d-inline-block save-hat">Zapisz czapkę</button>
           <p class="h1 d-flex d-inline-block player-nick">{{ displayPlayerNick }}</p>
-          <p class="h2 d-flex d-inline-block level">level: {{ displayLevel }}</p>
+          <p class="h2 d-flex d-inline-block level">Poziom: {{ displayLevel }}</p>
               </div>
         <div class="col-4">
           <div class="row h-100 align-items-center">
@@ -51,7 +51,7 @@
 
       <v-btn @click="logout">
       <button type="button" class="btn btn-primary button-logout">
-          Log Out
+          Wyloguj
           </button>
       </v-btn>
 
