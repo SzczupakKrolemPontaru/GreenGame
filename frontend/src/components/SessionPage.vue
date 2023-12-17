@@ -1,5 +1,5 @@
 <template>
-  <div class="standard_text">
+  <div class="standard_text" v-if="!start">
     <div v-if="!loggedIn">
       <input v-model="credentials" type="text" placeholder="your username" />
       <button @click="login" class="btn btn-primary">Login</button>
@@ -9,8 +9,11 @@
       <button @click="createNewSession" class="btn btn-success">Create New Session</button>
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
-          <text>Session ID: {{ session.id }}</text>
-          <div><text>Players: {{ session.players}}</text></div>
+          <text>Session ID: {{ session.id }}</text><br/>
+          <text>Players:</text>
+          <div v-for="player in session.players" :key="player.name">
+            <text>{{ player.name }}</text>
+          </div>
           <button @click="joinSession(session.id)" class="btn btn-info">Join Session</button>
         </div>
       </div>
@@ -26,9 +29,12 @@
       </div>
       <button @click="sendMessage" class="btn btn-primary mt-3">Send Message</button>
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
+      <button @click="startGame" class="btn btn-success mt-3">Start Game</button>
     </div>
   </div>
-  <miniGame v-on:updateScore="updateCurrentScore" />
+  <div v-if="this.start">
+    <miniGame v-on:updateScore="updateCurrentScore" />
+  </div>
 </template>
 
 
@@ -42,21 +48,16 @@ export default {
   name: "LoginPage",
   data: () => ({
     sessions: [],
-    username: "", // Added username property
-    loggedIn: false, // Added loggedIn property
+    username: "",
+    loggedIn: false,
     currentSessionId: null,
+    start: false,
   }),
   methods: {
+    startGame() {
+      this.start = true;
+    },
     async updateCurrentScore(actions) {
-      if(this.username === "") {
-        this.username = "Anonymous";
-      }
-      if(this.currentSessionId === null) {
-        this.currentSessionId = await sharedSessionManager.createNewSession(
-            this.username
-        );
-      }
-      console.log('Updating current score in LoginPage:', actions);
       this.currentScore = actions;
       sharedSessionManager.updatePlayerScoreInSession(this.currentSessionId,this.username, this.currentScore);
     },
@@ -91,7 +92,6 @@ export default {
     },
   },
 
-
   mounted() {
     sharedSessionManager.subscribeToSessions((sessions) => {
       this.sessions = sessions;
@@ -99,7 +99,6 @@ export default {
   },
   // Make sure to stop listening when the component is destroyed
   beforeUnmount() {
-    sharedSessionManager.deleteSession(this.currentSessionId)
     sharedSessionManager.stopListeningToSessions();
   },
 };

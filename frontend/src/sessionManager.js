@@ -22,7 +22,7 @@ class SessionManager {
         return addDoc(collection(db, "sessions"), newSession)
             .then((docRef) => {
                 console.log("New session created with ID:", docRef.id);
-                return docRef.id; // Zwróć identyfikator nowo utworzonej sesji
+                return docRef.id;
             })
             .catch((error) => {
                 console.error("Error creating new session:", error.message);
@@ -30,7 +30,7 @@ class SessionManager {
             });
     }
 
-    joinSession(sessionId, player) {
+    async joinSession(sessionId, player) {
         try {
             const sessionIndex = this.sessions.findIndex((session) => session.id === sessionId);
 
@@ -39,7 +39,7 @@ class SessionManager {
                 const currentSession = this.sessions[sessionIndex];
                 const updatedSession = {
                     ...currentSession,
-                    players: [...currentSession.players, player],
+                    players: [...currentSession.players, { name: player, score: 0 }],
                 };
 
                 // Update the session in the sessions array
@@ -49,15 +49,11 @@ class SessionManager {
                 const sessionDocRef = doc(db, "sessions", sessionId);
 
                 // Update the document
-                updateDoc(sessionDocRef, {
+                await updateDoc(sessionDocRef, {
                     players: updatedSession.players,
-                })
-                    .then(() => {
-                        console.log(`Player ${player} joined session with ID ${sessionId}`);
-                    })
-                    .catch((error) => {
-                        console.error("Error joining session:", error.message);
-                    });
+                });
+
+                console.log(`Player ${player} joined session with ID ${sessionId}`);
             } else {
                 console.error(`Session ID ${sessionId} not found`);
             }
@@ -65,6 +61,7 @@ class SessionManager {
             console.error("Error joining session:", error.message);
         }
     }
+
 
     subscribeToSessions(callback) {
         const sessionsQuery = collection(db, "sessions");
