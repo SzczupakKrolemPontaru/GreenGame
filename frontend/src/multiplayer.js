@@ -1,8 +1,8 @@
-// sessionManager.js
+// multiplayer.js
 import {db} from "@/firebase/firebase";
 import {onSnapshot, collection, addDoc, deleteDoc, doc, updateDoc} from "firebase/firestore";
 
-class SessionManager {
+class Multiplayer {
     constructor() {
         this.sessions = [];
         this.unsubscribe = null;
@@ -188,7 +188,7 @@ class SessionManager {
     }
 }
 
-// Create a single instance of SessionManager
-const sharedSessionManager = new SessionManager();
+// Create a single instance of Multiplayer
+const sharedSessionManager = new Multiplayer();
 
 export {sharedSessionManager};

@@ -42,7 +42,7 @@
 
 
 <script>
-import { sharedSessionManager } from "@/sessionManager";
+import { sharedSessionManager } from "@/multiplayer";
 import miniGame from "@/components/MiniGame.vue";
 export default {
   components: {
