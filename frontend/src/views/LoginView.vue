@@ -33,6 +33,20 @@
             <p class="invalid-feedback" v-if="isEmailInvalid()">Provide a valid email address!</p>
           </div>
 
+          <div v-if="isSignUp()" class="form-group mb-2">
+            <label for="name">Name:</label>
+            <input
+                type="text"
+                id="name"
+                v-model="name"
+                class="form-control form-control-lg"
+                placeholder="Enter your name"
+                :class="{'is-invalid': isNameInvalid() && this.nameTouched}"
+                @blur="setNameTouched"
+            />
+            <p class="invalid-feedback" v-if="isEmailInvalid()">Name has to be at least 3 characters long!</p>
+          </div>
+
           <div class="form-group mb-2">
             <label class="text-lg-start" for="password">Password:</label>
             <input
@@ -60,7 +74,7 @@
             <p class="invalid-feedback" v-if="isPasswordConfirmInvalid()">Password and password confirm don't match!</p>
 
           </div>
-          <button :disabled="!isFormValid()" @click="login" type="submit" class="btn btn-primary" >Submit</button>
+          <button :disabled="!isFormValid()" type="submit" class="btn btn-primary" >Submit</button>
         </form>
         <div v-if="isLoading" class="mt-2 spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -84,8 +98,9 @@
 </template>
 
 <script>
-import {createUser, signInUser} from "@/firebase/firebase";
+import {createUser, signInUser} from "@/firebase/auth.js";
 import {Toast} from "bootstrap";
+import {createUserDocument} from "@/firebase/userDAO";
 
 export default {
   name: "LoginView",
@@ -95,9 +110,11 @@ export default {
       email: '',
       password: '',
       passwordConfirm: '',
+      name:'',
       emailTouched: false,
       passwordTouched: false,
       confirmTouched: false,
+      nameTouched: false,
       emailRegex: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       serverMessage: '',
       isLoading: false
@@ -108,6 +125,7 @@ export default {
     changeType(newType) {
       this.type = newType;
       this.email = '';
+      this.name = '';
       this.password = '';
       this.passwordConfirm = '';
       this.emailTouched = false;
@@ -130,6 +148,9 @@ export default {
     setConfirmTouched() {
       this.confirmTouched = true;
     },
+    setNameTouched() {
+      this.nameTouched = true;
+    },
     isEmailInvalid() {
       return !this.emailRegex.test(this.email)
     },
@@ -144,10 +165,15 @@ export default {
       }
       return (this.passwordConfirm !== this.password)
     },
+    isNameInvalid() {
+      if (this.type === 'login') {
+        return false;
+      }
+      return this.name.length < 3
+    },
     isFormValid() {
-      const valid = !(this.isEmailInvalid() || this.isPasswordInvalid() || this.isPasswordConfirmInvalid())
-
-      return valid;
+      return !(this.isEmailInvalid() || this.isPasswordInvalid()
+          || this.isPasswordConfirmInvalid() || this.isNameInvalid());
     },
     login() {
       this.$router.push({
@@ -167,10 +193,12 @@ export default {
             await signInUser(this.email, this.password);
 
           } else {
-            await createUser(
+            const user = await createUser(
                 this.email,
                 this.password
             );
+            await createUserDocument(user, {name: this.name});
+
           }
           this.isLoading = false;
           await this.$router.push('/');
@@ -194,6 +222,7 @@ export default {
       }
     },
     errorHandling(e) {
+      console.log(e)
       switch (e.code) {
         case 'auth/invalid-credential':
           this.serverMessage = 'This account does not exist';
