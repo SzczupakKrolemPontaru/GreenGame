@@ -35,7 +35,7 @@
   <div v-if="this.start">
     <miniGame v-on:updateScore="updateCurrentScore" />
     <div class="otherScore">
-      <p>Other player score: {{ displayOtherPlayerScore }}</p>
+      <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
     </div>
   </div>
 </template>
