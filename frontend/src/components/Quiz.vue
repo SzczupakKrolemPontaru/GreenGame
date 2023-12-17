@@ -247,24 +247,6 @@ button:hover {
   background-color: #0056b3;
 }
 
-.popup {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-}
-
-.popup-content {
-  text-align: center;
-  font-size: 18px;
-}
 
 </style>
 /* eslint-disable */
