@@ -135,7 +135,7 @@ export default {
     },
     playGame() {
       this.$router.push({
-        name: 'gamechoose'
+        name: 'quiz'
       })
     },
     getLoggerUser() {

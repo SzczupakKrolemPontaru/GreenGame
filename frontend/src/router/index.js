@@ -9,7 +9,7 @@ import StartGame from '@/views/StartGame.vue';
 import ChooseMode from '@/views/ChooseMode.vue';
 import ChooseLevel from '@/views/ChooseLevel.vue';
 import MiniGame from '@/components/MiniGame.vue';
-import QuizView from '@/components/Quiz.vue';
+import QuizView from '@/views/QuizView.vue';
 
 
 const routes = [
