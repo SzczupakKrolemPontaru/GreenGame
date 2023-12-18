@@ -8,9 +8,12 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ms-auto">
           <router-link to="/" class="nav-link" aria-current="page">Home</router-link>
-          <router-link to="/about" class="nav-link" aria-current="page">About</router-link>
-          <router-link v-if="!store.user" to="/login" class="nav-link" aria-current="page">Login</router-link>
-          <router-link v-if="store.user" to="/account" class="nav-link" aria-current="page">Account</router-link>
+          <router-link v-if="store.user" to="/mainmenu" class="nav-link" aria-current="page">Menu Główne</router-link>
+          <router-link to="/quiz" class="nav-link" aria-current="page">Quizy</router-link>
+          <router-link to="/gamechoose" class="nav-link" aria-current="page">Gry</router-link>
+<!--          <router-link to="/about" class="nav-link" aria-current="page">About</router-link>-->
+          <router-link v-if="!store.user" to="/login" class="nav-link" aria-current="page">Logowanie</router-link>
+          <router-link v-if="store.user" to="/account" class="nav-link" aria-current="page">Moje konto</router-link>
         </div>
       </div>
     </div>
