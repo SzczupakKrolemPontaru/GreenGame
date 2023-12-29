@@ -10,7 +10,7 @@
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
           <text>ID sesji: {{ session.id }}</text><br/>
-          <text>Gracz:</text>
+          <text>Gracze:</text>
           <div v-for="player in session.players" :key="player.name">
             <text>{{ player.name }}</text>
           </div>
@@ -18,24 +18,35 @@
         </div>
       </div>
     </div>
-    <div v-if="loggedIn && currentSessionId !== null">
-      <div v-for="session in sessions" :key="session.id">
-        <div v-if="session.id === currentSessionId">
-          <p class="mt-3">wiadomości dla sesji {{ currentSessionId }}:</p>
-          <div v-for="message in session.messages" :key="message.id">
-            <p>{{ message.sender }}: {{ message.content }}</p>
-          </div>
+  </div>
+  <div v-if="!start &&loggedIn && currentSessionId !== null">
+    <button @click="startGame" class="start_button">Rozpocznij grę</button>
+  </div>
+  <div v-if="this.start" class = "game">
+    <miniGame v-on:updateScore="updateCurrentScore" />
+  </div>
+  <div v-if="loggedIn && currentSessionId !== null" class = "multiplayer_panel">
+    <div v-if="this.start" class = "otherScore">
+      <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
+    </div>
+    <h1>czat</h1>
+    <div v-for="session in sessions" :key="session.id">
+      <div v-if="session.id === currentSessionId">
+        <div v-for="message in session.messages" :key="message.id">
+          <div :class = "{ 'sender': message.sender === username, 'receiver': message.sender !== username }">{{ message.sender }}</div>
+          <div :class = "{ 'sent-message': message.sender === username, 'received-message': message.sender !== username }">{{ message.content }}</div>
         </div>
       </div>
-      <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
-      <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
-      <button @click="startGame" class="btn btn-success mt-3">Rozpocznij grę</button>
     </div>
-  </div>
-  <div v-if="this.start">
-    <miniGame v-on:updateScore="updateCurrentScore" />
-    <div class="otherScore">
-      <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
+    <button @click="displayEmotes" class="btn btn-primary mt-3">😊</button>
+    <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
+    <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
+    <div v-if="show_emotes" class="emote_table">
+      <div class="row">
+        <div v-for="(emote) in emotes" :key="emote" class="col-3 col-md-2">
+          <button @click="addEmote(emote)" class="btn btn-primary mt-2">{{ emote }}</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +55,7 @@
 <script>
 import { sharedSessionManager } from "@/multiplayer";
 import miniGame from "@/components/MiniGame.vue";
+import * as emoji from 'node-emoji'
 export default {
   components: {
     miniGame,
@@ -54,8 +66,19 @@ export default {
     sessions: [],
     username: "",
     loggedIn: false,
+    toSend: "",
     currentSessionId: null,
     start: false,
+    show_emotes: false,
+    emotes:[
+      "😊", "😎", "😍", "🥳", "🤩", "😜", "🤔", "😇", "🙌", "🎉",
+      "🌈", "🌟", "💖", "👏", "🔥", "💯", "✨", "🚀", "🎈", "🎊",
+      "💪", "🤗", "😂", "😹", "👻", "🤖", "🐱", "🐶", "🦄", "🐒",
+      "😀", "😃", "😄", "😁", "😅", "😆", "😂", "🤣", "😊", "😇",
+      "😍", "🥰", "😘", "😗", "😙", "😚", "☺️", "🙂", "🤗", "🤩",
+      "😐", "😑", "😶", "😏", "😒", "🙄", "😬", "😌", "😔", "😪"
+    ],
+
   }),
   computed: {
     displayOtherPlayerScore() {
@@ -63,6 +86,12 @@ export default {
     },
   },
   methods: {
+    displayEmotes(){
+      this.show_emotes = !this.show_emotes;
+    },
+    addEmote(emote){
+      this.toSend += emote;
+    },
     startGame() {
       this.start = true;
     },
@@ -104,9 +133,10 @@ export default {
     },
     async sendMessage() {
       try {
+        const processed_message = emoji.emojify(this.toSend);
         await sharedSessionManager.sendMessage(
             this.currentSessionId,
-            this.toSend,
+            processed_message,
             this.username
         );
         this.toSend = "";
@@ -136,15 +166,74 @@ export default {
 .standard_text {
   font-size: 25px;
 }
-
-.otherScore {
+.start_button{
   font-size: 50px;
   font-weight: bold;
-  background: #2c3e50;
-  color: #fff; /* Kolor tekstu na tle niebieskiego /
-  padding: 10px; / Dodatkowy odstęp wewnątrz elementu dla lepszego wyglądu */
+  background-color: rgb(244, 23, 49);
+  background-image: linear-gradient(38deg, rgb(244, 23, 41) 8%, rgb(248, 172, 9) 83%);
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 45%;
+  left: 40%;
+  border-radius: 30px;
+}
+.otherScore {
+  font-size: 30px;
+  font-weight: bold;
+  color: #fff;
+  padding: 10px;
   position: fixed;
   top: 0;
   right: 0;
+  width: 20%;
+}
+.multiplayer_panel{
+  height: 100%;
+  width: 20%;
+  position: fixed;
+  left: 80%;
+  overflow-y: auto;
+
+}
+
+.sender {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e7f0fd;
+  text-align: left;
+}
+.receiver {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e7f0fd;
+  text-align: left;
+}
+.sent-message {
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+  font-size: 20px;
+  background-color: rgba(86, 244, 23, 1);
+  background-image: linear-gradient(38deg, rgba(86, 244, 23, 1) 8%, rgba(9, 244, 248, 1) 83%);
+  color: #ffffff;
+  border-radius: 10px; /* Adjust the radius as needed */
+}
+
+.received-message {
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+  font-size: 20px;
+  background-color: rgba(244, 115, 23, 1);
+  background-image: linear-gradient(38deg, rgba(244, 115, 23, 1) 8%, rgba(248, 209, 9, 1) 83%);
+  color: #ffffff;
+  border-radius: 10px;
+}
+.game{
+  height: 100%;
+  width: 80%;
+  position: fixed;
+  left: 0;
 }
 </style>
