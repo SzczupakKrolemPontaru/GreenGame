@@ -44,6 +44,7 @@
 <script>
 import { sharedSessionManager } from "@/multiplayer";
 import miniGame from "@/components/MiniGame.vue";
+import * as emoji from 'node-emoji'
 export default {
   components: {
     miniGame,
@@ -104,9 +105,10 @@ export default {
     },
     async sendMessage() {
       try {
+        const processed_message = emoji.emojify(this.toSend);
         await sharedSessionManager.sendMessage(
             this.currentSessionId,
-            this.toSend,
+            processed_message,
             this.username
         );
         this.toSend = "";
