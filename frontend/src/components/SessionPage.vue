@@ -10,7 +10,7 @@
       <div v-for="session in sessions" :key="session.id" class="card mt-3">
         <div class="card-body">
           <text>ID sesji: {{ session.id }}</text><br/>
-          <text>Gracz:</text>
+          <text>Gracze:</text>
           <div v-for="player in session.players" :key="player.name">
             <text>{{ player.name }}</text>
           </div>
@@ -28,12 +28,15 @@
           </div>
         </div>
       </div>
+      <button @click="displayEmotes" class="btn btn-primary mt-3">😊</button>
       <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
       <button @click="startGame" class="btn btn-success mt-3">Rozpocznij grę</button>
     </div>
+    <div v-if="emotes" class="emote_table">
+    </div>
   </div>
-  <div v-if="this.start">
+  <div v-if="this.start" class = "game">
     <miniGame v-on:updateScore="updateCurrentScore" />
     <div class="otherScore">
       <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
@@ -151,12 +154,13 @@ export default {
   right: 0;
 }
 .multiplayer_panel{
-  height: 100%;
+  height: 90%;
   width: 20%;
   position: fixed;
-  top: 60px;
-  right: 0;
+  left: 80%;
+  overflow-y: auto; /* Add this line to enable vertical scrolling */
 }
+
 .chat {
   background: #6a6977;
   border-style: solid;
@@ -165,7 +169,7 @@ export default {
   font-size: 20px;
   font-weight: bold;
   color: #e7f0fd;
-  text-align: right;
+  text-align: left;
 }
 .receiver {
   font-size: 20px;
@@ -176,20 +180,28 @@ export default {
 .sent-message {
   width: fit-content;
   height: fit-content;
-  padding: 3px;
+  padding: 10px;
+  font-size: 20px;
   background-color: rgba(86, 244, 23, 1);
   background-image: linear-gradient(38deg, rgba(86, 244, 23, 1) 8%, rgba(9, 244, 248, 1) 83%);
-  text-align: right;
   color: #ffffff;
+  border-radius: 10px; /* Adjust the radius as needed */
 }
 
 .received-message {
   width: fit-content;
   height: fit-content;
-  padding: 3px;
+  padding: 10px;
+  font-size: 20px;
   background-color: rgba(244, 115, 23, 1);
   background-image: linear-gradient(38deg, rgba(244, 115, 23, 1) 8%, rgba(248, 209, 9, 1) 83%);
-  text-align: left;
   color: #ffffff;
+  border-radius: 10px;
+}
+.game{
+  height: 100%;
+  width: 80%;
+  position: fixed;
+  left: 0;
 }
 </style>
