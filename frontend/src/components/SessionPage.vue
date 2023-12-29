@@ -18,12 +18,13 @@
         </div>
       </div>
     </div>
-    <div v-if="loggedIn && currentSessionId !== null">
-      <div v-for="session in sessions" :key="session.id">
+    <div v-if="loggedIn && currentSessionId !== null" class = "multiplayer_panel">
+      <h1>czat</h1>
+      <div v-for="session in sessions" :key="session.id" class="chat">
         <div v-if="session.id === currentSessionId">
-          <p class="mt-3">wiadomości dla sesji {{ currentSessionId }}:</p>
           <div v-for="message in session.messages" :key="message.id">
-            <p>{{ message.sender }}: {{ message.content }}</p>
+            <div :class = "{ 'sender': message.sender === username, 'receiver': message.sender !== username }">{{ message.sender }}</div>
+            <div :class = "{ 'sent-message': message.sender === username, 'received-message': message.sender !== username }">{{ message.content }}</div>
           </div>
         </div>
       </div>
@@ -143,10 +144,52 @@ export default {
   font-size: 50px;
   font-weight: bold;
   background: #2c3e50;
-  color: #fff; /* Kolor tekstu na tle niebieskiego /
-  padding: 10px; / Dodatkowy odstęp wewnątrz elementu dla lepszego wyglądu */
+  color: #fff;
+  padding: 10px;
   position: fixed;
   top: 0;
   right: 0;
+}
+.multiplayer_panel{
+  height: 100%;
+  width: 20%;
+  position: fixed;
+  top: 60px;
+  right: 0;
+}
+.chat {
+  background: #6a6977;
+  border-style: solid;
+}
+.sender {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e7f0fd;
+  text-align: right;
+}
+.receiver {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e7f0fd;
+  text-align: left;
+}
+.sent-message {
+  width: fit-content;
+  height: fit-content;
+  padding: 3px;
+  background-color: rgba(86, 244, 23, 1);
+  background-image: linear-gradient(38deg, rgba(86, 244, 23, 1) 8%, rgba(9, 244, 248, 1) 83%);
+  text-align: right;
+  color: #ffffff;
+}
+
+.received-message {
+  width: fit-content;
+  height: fit-content;
+  padding: 3px;
+  background-color: rgba(244, 115, 23, 1);
+  background-image: linear-gradient(38deg, rgba(244, 115, 23, 1) 8%, rgba(248, 209, 9, 1) 83%);
+  text-align: left;
+  color: #ffffff;
 }
 </style>
