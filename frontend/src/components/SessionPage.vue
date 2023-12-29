@@ -32,8 +32,13 @@
       <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
       <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
       <button @click="startGame" class="btn btn-success mt-3">Rozpocznij grę</button>
-    </div>
-    <div v-if="emotes" class="emote_table">
+      <div v-if="show_emotes" class="emote_table">
+        <div class="row">
+          <div v-for="(emote) in emotes" :key="emote" class="col-3 col-md-2">
+            <button @click="addEmote(emote)" class="btn btn-primary mt-2">{{ emote }}</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div v-if="this.start" class = "game">
@@ -59,8 +64,19 @@ export default {
     sessions: [],
     username: "",
     loggedIn: false,
+    toSend: "",
     currentSessionId: null,
     start: false,
+    show_emotes: false,
+    emotes:[
+      "😊", "😎", "😍", "🥳", "🤩", "😜", "🤔", "😇", "🙌", "🎉",
+      "🌈", "🌟", "💖", "👏", "🔥", "💯", "✨", "🚀", "🎈", "🎊",
+      "💪", "🤗", "😂", "😹", "👻", "🤖", "🐱", "🐶", "🦄", "🐒",
+      "😀", "😃", "😄", "😁", "😅", "😆", "😂", "🤣", "😊", "😇",
+      "😍", "🥰", "😘", "😗", "😙", "😚", "☺️", "🙂", "🤗", "🤩",
+      "😐", "😑", "😶", "😏", "😒", "🙄", "😬", "😌", "😔", "😪"
+    ],
+
   }),
   computed: {
     displayOtherPlayerScore() {
@@ -68,6 +84,12 @@ export default {
     },
   },
   methods: {
+    displayEmotes(){
+      this.show_emotes = !this.show_emotes;
+    },
+    addEmote(emote){
+      this.toSend += emote;
+    },
     startGame() {
       this.start = true;
     },
@@ -159,6 +181,7 @@ export default {
   position: fixed;
   left: 80%;
   overflow-y: auto; /* Add this line to enable vertical scrolling */
+  background: #ffffff;
 }
 
 .chat {
