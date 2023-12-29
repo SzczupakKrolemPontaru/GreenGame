@@ -1,8 +1,8 @@
 <template>
   <div class="standard_text" v-if="!start">
     <div v-if="!loggedIn">
-      <input v-model="credentials" type="text" placeholder="twój nick" />
-      <button @click="login" class="btn btn-primary">Graj</button>
+      <h1>Żeby grać w trybie multiplayer musisz być zalogowany !</h1>
+      <button @click="login" class="btn btn-primary">Zaloguj</button>
     </div>
     <div v-if="loggedIn && currentSessionId === null">
       <div class ="header_class"><header>Witaj {{ this.username }} !</header></div>
@@ -57,7 +57,7 @@ import { sharedSessionManager } from "@/multiplayer";
 import miniGame from "@/components/MiniGame.vue";
 import * as emoji from 'node-emoji'
 import {store} from "@/store";
-import {ref} from "vue";
+import router from "@/router";
 export default {
   components: {
     miniGame,
@@ -102,8 +102,7 @@ export default {
       sharedSessionManager.updatePlayerScoreInSession(this.currentSessionId,this.username, this.currentScore);
     },
     login() {
-      this.username = this.credentials
-      this.loggedIn = true;
+      router.push('/Login')
     },
     async createNewSession() {
       try {
@@ -152,8 +151,10 @@ export default {
     sharedSessionManager.subscribeToSessions((sessions) => {
       this.sessions = sessions;
     });
-    this.username = ref(store.user.name);
-    this.loggedIn = ref(store.user !== null);
+    if (store.user !== null) {
+      this.username = store.user.name;
+      this.loggedIn = true;
+    }
   },
   // Make sure to stop listening when the component is destroyed
   beforeUnmount() {
