@@ -18,33 +18,35 @@
         </div>
       </div>
     </div>
-    <div v-if="loggedIn && currentSessionId !== null" class = "multiplayer_panel">
-      <h1>czat</h1>
-      <div v-for="session in sessions" :key="session.id" class="chat">
-        <div v-if="session.id === currentSessionId">
-          <div v-for="message in session.messages" :key="message.id">
-            <div :class = "{ 'sender': message.sender === username, 'receiver': message.sender !== username }">{{ message.sender }}</div>
-            <div :class = "{ 'sent-message': message.sender === username, 'received-message': message.sender !== username }">{{ message.content }}</div>
-          </div>
-        </div>
-      </div>
-      <button @click="displayEmotes" class="btn btn-primary mt-3">😊</button>
-      <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
-      <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
-      <button @click="startGame" class="btn btn-success mt-3">Rozpocznij grę</button>
-      <div v-if="show_emotes" class="emote_table">
-        <div class="row">
-          <div v-for="(emote) in emotes" :key="emote" class="col-3 col-md-2">
-            <button @click="addEmote(emote)" class="btn btn-primary mt-2">{{ emote }}</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
+  <div v-if="!start &&loggedIn && currentSessionId !== null">
+    <button @click="startGame" class="start_button">Rozpocznij grę</button>
   </div>
   <div v-if="this.start" class = "game">
     <miniGame v-on:updateScore="updateCurrentScore" />
-    <div class="otherScore">
+  </div>
+  <div v-if="loggedIn && currentSessionId !== null" class = "multiplayer_panel">
+    <div v-if="this.start" class = "otherScore">
       <p>Wynik drugiego gracza: {{ displayOtherPlayerScore }}</p>
+    </div>
+    <h1>czat</h1>
+    <div v-for="session in sessions" :key="session.id">
+      <div v-if="session.id === currentSessionId">
+        <div v-for="message in session.messages" :key="message.id">
+          <div :class = "{ 'sender': message.sender === username, 'receiver': message.sender !== username }">{{ message.sender }}</div>
+          <div :class = "{ 'sent-message': message.sender === username, 'received-message': message.sender !== username }">{{ message.content }}</div>
+        </div>
+      </div>
+    </div>
+    <button @click="displayEmotes" class="btn btn-primary mt-3">😊</button>
+    <button @click="sendMessage" class="btn btn-primary mt-3">Wyślij wiadomość</button>
+    <input v-model="toSend" type="text" placeholder="your message" class="form-control mt-2" />
+    <div v-if="show_emotes" class="emote_table">
+      <div class="row">
+        <div v-for="(emote) in emotes" :key="emote" class="col-3 col-md-2">
+          <button @click="addEmote(emote)" class="btn btn-primary mt-2">{{ emote }}</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -164,30 +166,37 @@ export default {
 .standard_text {
   font-size: 25px;
 }
-
-.otherScore {
+.start_button{
   font-size: 50px;
   font-weight: bold;
-  background: #2c3e50;
+  background-color: rgb(244, 23, 49);
+  background-image: linear-gradient(38deg, rgb(244, 23, 41) 8%, rgb(248, 172, 9) 83%);
+  color: #fff;
+  padding: 10px;
+  position: fixed;
+  top: 45%;
+  left: 40%;
+  border-radius: 30px;
+}
+.otherScore {
+  font-size: 30px;
+  font-weight: bold;
   color: #fff;
   padding: 10px;
   position: fixed;
   top: 0;
   right: 0;
+  width: 20%;
 }
 .multiplayer_panel{
-  height: 90%;
+  height: 100%;
   width: 20%;
   position: fixed;
   left: 80%;
-  overflow-y: auto; /* Add this line to enable vertical scrolling */
-  background: #ffffff;
+  overflow-y: auto;
+
 }
 
-.chat {
-  background: #6a6977;
-  border-style: solid;
-}
 .sender {
   font-size: 20px;
   font-weight: bold;
