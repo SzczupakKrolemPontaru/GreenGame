@@ -56,6 +56,8 @@
 import { sharedSessionManager } from "@/multiplayer";
 import miniGame from "@/components/MiniGame.vue";
 import * as emoji from 'node-emoji'
+import {store} from "@/store";
+import {ref} from "vue";
 export default {
   components: {
     miniGame,
@@ -150,6 +152,8 @@ export default {
     sharedSessionManager.subscribeToSessions((sessions) => {
       this.sessions = sessions;
     });
+    this.username = ref(store.user.name);
+    this.loggedIn = ref(store.user !== null);
   },
   // Make sure to stop listening when the component is destroyed
   beforeUnmount() {
