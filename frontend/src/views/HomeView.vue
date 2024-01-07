@@ -35,9 +35,4 @@
 
 <script setup>
 import {store} from "@/store"
-// import {getCharacterByUser} from "@/firebase/characterDAO";
-//
-// const getCharacter = async () => {
-//   await getCharacterByUser(store.user.uid);
-// }
 </script>

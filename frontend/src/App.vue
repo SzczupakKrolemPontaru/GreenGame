@@ -27,16 +27,20 @@ nav a.router-link-exact-active {
 </style>
 <script>
 import MainNav from "@/components/MainNav";
-import {onMounted} from "vue";
+import {onBeforeMount} from "vue";
 import {auth} from './firebase/firebase.js'
-import {storeUserObject} from "@/firebase/userDAO";
+import {UserDAO} from "@/firebase/userDAO";
+import {store} from "@/store";
 export default {
   components: {MainNav},
   setup() {
-    onMounted(() => {
-      console.log('App loaded!');
+    const storedUser = localStorage.getItem('user');
+    const userDAO = new UserDAO();
+    store.user = storedUser ? JSON.parse(storedUser) : null;
+    onBeforeMount(() => {
+      console.log('User init');
       auth.onAuthStateChanged(async (user) => {
-        await storeUserObject(user);
+        await userDAO.storeUserObject(user);
       })
     });
   }

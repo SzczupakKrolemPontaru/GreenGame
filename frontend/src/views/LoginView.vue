@@ -100,7 +100,7 @@
 <script>
 import {createUser, signInUser} from "@/firebase/auth.js";
 import {Toast} from "bootstrap";
-import {createUserDocument} from "@/firebase/userDAO";
+import {UserDAO} from "@/firebase/userDAO";
 
 export default {
   name: "LoginView",
@@ -117,7 +117,8 @@ export default {
       nameTouched: false,
       emailRegex: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       serverMessage: '',
-      isLoading: false
+      isLoading: false,
+      userDAO: new UserDAO()
 
     };
   },
@@ -188,7 +189,7 @@ export default {
                 this.email,
                 this.password
             );
-            await createUserDocument(user, {name: this.name});
+            await this.userDAO.createUserDocument(user, {name: this.name});
 
           }
           this.isLoading = false;
