@@ -1,7 +1,7 @@
 /* eslint-disable */
 <template>
   <div>
-    <Quiz :questions="questions"/>
+    <Quiz :questions="questions" @start-quiz="handleStartQuiz"/>
   </div>
 </template>
 
@@ -16,20 +16,27 @@ export default {
   },
   data() {
     return {
-      questions: []
+      questions: [],
+      selectedQuizId: null,
     };
   },
-    async created() {
+  methods: {
+    async created(selectedQuizId) {
       const quizDAO = new QuizDAO();
-
-      const quizFromFirestore = await quizDAO.getQuiz("Quiz1");
+      const quizFromFirestore = await quizDAO.getQuiz(selectedQuizId);
 
       if (quizFromFirestore) {
         this.questions = quizFromFirestore.questions;
       } else {
         console.error('Nie udało się pobrać pytań z Firestore.');
       }
-    }
+    },
+
+    handleStartQuiz(quizId) {
+      this.selectedQuizId = quizId;
+      this.create(this.selectedQuizId);
+    },
+  }
 
 };
 </script>

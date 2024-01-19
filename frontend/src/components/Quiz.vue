@@ -66,7 +66,7 @@ export default {
       score: 0,
       selectedAnswerIndex: null,
       quizBoxes: [
-        { id: 1, name: 'Quiz 1' },
+        { id: "Quiz1", name: 'Quiz 1' },
         { id: 2, name: 'Quiz 2' },
         { id: 3, name: 'Quiz 3' }
       ],
@@ -110,6 +110,7 @@ export default {
     },
     startQuiz() {
       this.isOnTitlePage = false;
+      this.$emit('start-quiz', this.selectedBoxId);
     },
     resetQuiz() {
       this.currentQuestionIndex = 0;
