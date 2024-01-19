@@ -1,5 +1,5 @@
 import {GenericDAO} from "@/firebase/genericDAO";
-import {collection, getDocs, query, where} from "firebase/firestore";
+import {collection,  getDocs, query, where} from "firebase/firestore";
 import {db} from "@/firebase/firebase";
 
 
@@ -17,28 +17,24 @@ export class QuizDAO extends GenericDAO {
             if (querySnapshot.docs.length === 0) {
                 return null;
             }
+/*
+            const quiz = {
+                quizID: querySnapshot.docs.map(doc => doc.data().quizID),
+                title: querySnapshot.docs.map(doc => doc.data().title),
+                questions: querySnapshot.docs.map(doc => doc.data().questions),
+            };
+            console.log("quiz: ", quiz);
+            return quiz; */
 
+            const quizData = querySnapshot.docs[0].data(); // Pobierz dane z pierwszego dokumentu
 
-            const quiz =  this.mapFirestoreDocument(querySnapshot);
-
+            const quiz = {
+              quizID: quizData.quizID,
+              title: quizData.title,
+              questions: quizData.questions,
+            };
+          
+            console.log("quiz: ", quiz);
             return quiz;
-    }
-
-    async mapQuestion(question) {
-        return {
-            text: question.question,
-            answers: question.answers,
-            correctAnswerIndex: question.correctId,
-        };
-    }
-
-     async mapFirestoreDocument(document) {
-        const mappedDocument = {
-            quizID: document.quizID,
-            QuizTitle: document.title,
-            questions: document.questions.map(this.mapQuestion)
-        };
-
-        return mappedDocument;
     }
 }

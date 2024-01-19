@@ -27,6 +27,7 @@ export default {
 
       if (quizFromFirestore) {
         this.questions = quizFromFirestore.questions;
+        console.log(this.questions[0].correctIndex)
       } else {
         console.error('Nie udało się pobrać pytań z Firestore.');
       }
@@ -34,7 +35,7 @@ export default {
 
     handleStartQuiz(quizId) {
       this.selectedQuizId = quizId;
-      this.create(this.selectedQuizId);
+      this.created(this.selectedQuizId);
     },
   }
 

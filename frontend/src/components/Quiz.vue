@@ -21,7 +21,7 @@
         <div class="alert alert-danger" role="alert" v-if="showAlert">
         Udało ci się wykonać Quiz!
         </div>
-        <h3>{{ questions[currentQuestionIndex].text }}</h3>
+        <h3>{{ questions[currentQuestionIndex].question }}</h3>
         <div class="answer-options">
           <div
               v-for="(answer, ansIndex) in questions[currentQuestionIndex].answers"
@@ -67,8 +67,8 @@ export default {
       selectedAnswerIndex: null,
       quizBoxes: [
         { id: "Quiz1", name: 'Quiz 1' },
-        { id: 2, name: 'Quiz 2' },
-        { id: 3, name: 'Quiz 3' }
+        { id: "Quiz2", name: 'Quiz 2' },
+        { id: "Quiz3", name: 'Quiz 3' }
       ],
       selectedBoxId: null,
       answered: false,
@@ -86,7 +86,7 @@ export default {
     },
     checkAnswer() {
       if (this.selectedAnswerIndex !== null) {
-        const correctAnswerIndex = this.questions[this.currentQuestionIndex].correctAnswerIndex;
+        const correctAnswerIndex = this.questions[this.currentQuestionIndex].correctIndex;
         this.selectedAnswerCorrect = this.selectedAnswerIndex === correctAnswerIndex;
         if (this.selectedAnswerCorrect) {
           this.score++;
