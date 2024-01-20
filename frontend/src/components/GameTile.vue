@@ -4,10 +4,8 @@
       <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon" />
       <h2 class="game-title" v-else>{{ gameName }}</h2>
     </div>
-    <Minigame ref="minigame"/>
-    <Quiz ref="quiz"/>
     <div>
-      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal">Wyświetl ranking</button>
+      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal" :disabled="!isButtonEnabled">Wyświetl ranking</button>
       <div class="modal fade" id="scoreboardModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -42,7 +40,7 @@
 import { Modal } from "bootstrap";
 import { HighscoreDAO } from '@/firebase/highscoreDAO';
 import { QuizDAO } from "@/firebase/quizDAO";
-import { getLoggedUser } from '@/firebase/auth'
+import { getLoggedUser } from '@/firebase/auth';
 import Notiflix from "notiflix";
 
 export default {
@@ -52,13 +50,18 @@ export default {
     return {
       highScoreDAO: new HighscoreDAO(),
       quizDAO : new QuizDAO(),
+      gameScores: [],
     }
   },
 
   mounted() {
     let modalElement = document.getElementById('scoreboardModal');
     this.modalInstance = new Modal(modalElement);
+    modalElement.addEventListener('show.bs.modal', async () => {
+    this.gameScores = await this.getScores();
+  });
   },
+
 
   methods: {
     async startGame() {
@@ -74,13 +77,19 @@ export default {
     },
 
     async getScores() {
-      const scores = await this.highScoreDAO.getByMinigame(this.gameName);
-      return scores.map(score => {
-        return {
-          playerID: score.characterID,
-          score: score.points
-        }
+      const scores = await this.highScoreDAO.getByMinigame(0);
+      console.log(scores);
+      if (scores) {
+        return scores.map(score => {
+          return {
+            playerID: score.characterID,
+            score: score.points
+          }
       })
+      } else {
+        this.displayMessage('Brak wyników');
+        return [];
+      }
     },
 
     displayMessage(message) {
