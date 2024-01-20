@@ -22,10 +22,10 @@ export default {
   data() {
     return {
       availableGames: [
-        {name: 'Gra1', icon: GarbageTerrorIcon, isButtonEnabled: true},
-        {name: 'Gra2', isButtonEnabled: false},
-        {name: 'Gra3', isButtonEnabled: false},
-        {name: 'Gra4', isButtonEnabled: false}
+        {name: 'MiniGame1', icon: GarbageTerrorIcon, isButtonEnabled: true},
+        {name: 'MiniGame2', isButtonEnabled: false},
+        {name: 'MiniGame3', isButtonEnabled: false},
+        {name: 'MiniGame4', isButtonEnabled: false}
       ],
     }
   },

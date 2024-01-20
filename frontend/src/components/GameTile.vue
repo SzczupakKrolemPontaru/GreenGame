@@ -39,36 +39,20 @@
 </template>
 
 <script>
-import router from '@/router';
-import {Modal} from "bootstrap";
+import { Modal } from "bootstrap";
 import { HighscoreDAO } from '@/firebase/highscoreDAO';
+import { QuizDAO } from "@/firebase/quizDAO";
+import { getLoggedUser } from '@/firebase/auth'
+import Notiflix from "notiflix";
 
 export default {
   name: 'GameTile',
   props: ['gameName', 'gameIcon', 'isButtonEnabled'],
   data() {
     return {
-      // gameScores: [],
-      // userName: 'mockUserName',
-      // displayScoreboard: false
       highScoreDAO: new HighscoreDAO(),
+      quizDAO : new QuizDAO(),
     }
-  },
-
-  // Wywołuje funkcję po załadowaniu komponentu
-  created() {
-    // this.updateScoreboard();
-  },
-
-  // Aktualizuje wyniki po zmianie danych
-  // (obecnie taka nie istnieje)
-  watch: {
-    gameScores: {
-      handler() {
-        // this.updateScoreboard();
-      },
-      deep: true
-    },
   },
 
   mounted() {
@@ -77,19 +61,20 @@ export default {
   },
 
   methods: {
-    startGame() {
-      // Powinno utylizować metodę getQuizStatus(), np.:
-      // const isQuizFinished = this.getQuizStatus(this.userName);
-      if (this.$refs.quiz.isFinished && this.isButtonEnabled) {
-        this.$refs.minigame.start(this.userName);
+    async startGame() {
+      const user = getLoggedUser();
+      if (user) {
+        if (await this.getQuizStatus(user.uid) && this.isButtonEnabled) {
+        this.$router.push('/startgame');
       } else {
         this.displayMessage('Najpierw ukończ quiz');
+      }} else {
+        this.$router.push('/startgame');
       }
     },
 
     async getScores() {
-      const minigameID = 'id';
-      const scores = await this.highScoreDAO.getByMinigame(minigameID);
+      const scores = await this.highScoreDAO.getByMinigame(this.gameName);
       return scores.map(score => {
         return {
           playerID: score.characterID,
@@ -98,18 +83,22 @@ export default {
       })
     },
 
-    // Aktualizuje wyniki i sortuje je
-    // updateScoreboard() {
-    //   this.gameScores = this.getScores();
-    //   this.gameScores.sort((a, b) => b.score - a.score);
-    // },
-
     displayMessage(message) {
-      this.$toast(message);
+      Notiflix.Notify.warning(message);
     },
 
-    getQuizStatus() {
-      return this.$refs.quiz.isFinished[this.userName];
+    async getQuizStatus(uid) {
+      const completedQuizzesIDs = await this.quizDAO.getCompletedQuizzesIDs(uid);
+      if (completedQuizzesIDs) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    async displayScoreboard() {
+      this.gameScores = await this.getScores();
+      this.showModal();
     },
 
     showModal() {
