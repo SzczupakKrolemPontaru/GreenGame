@@ -22,6 +22,10 @@
   </div>
 </template>
 <script>
+ /* eslint-disable */
+import { MinigameDAO } from '@/firebase/minigameDAO.js';
+
+import {store} from "@/store";
 export default {
   props: {
     Value: Number
@@ -38,7 +42,8 @@ export default {
       containerPosition: { x: 140, y: 470 },
       trashItems: [],
       timer: 30, 
-      trashInterval: null, 
+      trashInterval: null,
+      minigameDAO: null,
     };
   },
   methods: {
@@ -122,23 +127,27 @@ export default {
     updateTrashPositions() {
       this.checkCollisions();
     },
-    endGame() {
+async endGame() {
   if (!this.gameEnded) {
     this.gameEnded = true;
     clearInterval(this.trashInterval);
     const finalScore = this.playerScore;
+    await this.minigameDAO.pushScore(this.gameID, store.user.name, finalScore);
     alert(`Koniec gry, twój wynik to: ${finalScore}`);
+
     this.timer = 1;
-    this.$router.push({ name: 'gamechoose' });
+    this.$router.push({name: 'gamechoose'});
   }
-}
-,
+},
+
   },
   mounted() {
     window.addEventListener('keydown', this.handleKeyPress);
     setInterval(this.updateTrashPositions, 16);
     setInterval(this.updateTimer, 1000);
     this.generateTrash();
+
+    this.minigameDAO = new MinigameDAO();
   },
   beforeUnmount() {
     window.removeEventListener('keydown', this.handleKeyPress);
