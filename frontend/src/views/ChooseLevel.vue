@@ -26,7 +26,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background: url('../assets/background2.gif') center center no-repeat;
+  background: url('../assets/MiniGame/background2.gif') center center no-repeat;
   background-size: cover;
   pointer-events: none;
 }

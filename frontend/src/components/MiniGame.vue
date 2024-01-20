@@ -14,10 +14,11 @@
       <p>Czas: {{ timer }}s</p>
     </div>
     <div v-for="trashItem in trashItems" :key="trashItem.id" class="trash" :style="{ left: trashItem.position.x + 'px', top: trashItem.position.y + 'px' }">
-      <svg class="svg-object" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-        <circle cx="15" cy="15" r="15" fill="#FF0000"/>
-      </svg>
-    </div>
+  <img v-if="trashItem.type === 1" :src="require('@/assets/MiniGame/paper_waste.svg')" alt="Paper Trash">
+  <img v-else-if="trashItem.type === 2" :src="require('@/assets/MiniGame/plastic.svg')" alt="Plastic Trash">
+  <img v-else :src="require('@/assets/MiniGame/trash.svg')" alt="Generic Trash">
+</div>
+
   </div>
 </template>
 <script>
@@ -73,14 +74,16 @@ export default {
       this.$emit('updateScore', this.playerScore);
     },
     generateTrash() {
-      this.trashInterval = setInterval(() => {
-        const trashItem = {
-          id: this.trashItems.length + 1,
-          position: { x: Math.random() * (1000 - 30), y: 0 },
-        };
-        this.trashItems.push(trashItem);
-      }, 2000);
-    },
+  this.trashInterval = setInterval(() => {
+    const trashType = Math.floor(Math.random() * 3) + 1; // 1 for paper, 2 for plastic, 3 for paper
+    const trashItem = {
+      id: this.trashItems.length + 1,
+      type: trashType,
+      position: { x: Math.random() * (1000 - 30), y: 0 },
+    };
+    this.trashItems.push(trashItem);
+  }, 2000);
+},
     checkCollisions() {
       const containerBounds = {
         left: this.containerPosition.x + 100,
@@ -156,7 +159,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background: url('../assets/background4.gif') center center no-repeat;
+  background: url('../assets/MiniGame/background4.gif') center center no-repeat;
   background-size: cover;
   pointer-events: none;
 }
