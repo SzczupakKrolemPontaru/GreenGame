@@ -35,8 +35,8 @@
             <span v-else>{{ answer }}</span>
           </div>
         </div>
-        <button @click="checkAnswer">Sprawdź</button>
-        <button @click="nextQuestion" v-if="answered">Następne</button>
+        <button @click="checkAnswer" v-if="isFinished == false">Sprawdź</button>
+        <button @click="nextQuestion" v-if="answered == true && isFinished == false ">Następne</button>
         <button @click="exitQuiz" class="exit-quiz-button">Wyjdź z Quizu</button>
       </div>
       <div v-else class="result-card">
@@ -72,6 +72,7 @@ export default {
       ],
       selectedBoxId: null,
       answered: false,
+      isFinished: false,
       //showAlert: false,
     };
   },
@@ -124,6 +125,7 @@ export default {
     score(){
       if (this.score === 5) {
         this.showAlert = true;
+        this.isFinished = true;
         setTimeout(() => {
           this.showAlert = false; 
           this.$router.push({ name: 'gamechoose' });
