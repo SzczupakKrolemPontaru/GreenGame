@@ -8,7 +8,7 @@
             v-for="box in quizBoxes"
             :key="box.id"
             class="quiz-box"
-            :class="{ 'selected': selectedBoxId === box.id }"
+            :class="{ 'selected': selectedBoxId === box.id, 'completed': completedQuizes.includes(box.id) }"
             @click="selectBox(box.id)">
           {{ box.name }}
         </div>
@@ -21,7 +21,7 @@
         <div class="alert alert-danger" role="alert" v-if="showAlert">
         Udało ci się wykonać Quiz!
         </div>
-        <h3>{{ questions[currentQuestionIndex].text }}</h3>
+        <h3>{{ questions[currentQuestionIndex].question }}</h3>
         <div class="answer-options">
           <div
               v-for="(answer, ansIndex) in questions[currentQuestionIndex].answers"
@@ -35,24 +35,27 @@
             <span v-else>{{ answer }}</span>
           </div>
         </div>
-        <button @click="checkAnswer">Sprawdź</button>
-        <button @click="nextQuestion" v-if="answered">Następne</button>
+        <button @click="checkAnswer" v-if="isFinished == false">Sprawdź</button>
+        <button @click="nextQuestion" v-if="answered == true && isFinished == false ">Następne</button>
         <button @click="exitQuiz" class="exit-quiz-button">Wyjdź z Quizu</button>
       </div>
       <div v-else class="result-card">
         <h3>Wynik: {{ score }} / {{ questions.length }}</h3>
-        <p v-if="score === 5">Gratulacje!</p>
+        <p v-if="checkScore">Gratulacje! {{ sendCompletedQuizID }}</p>
         <p v-else>Niestety, nie udało się.</p>
         <button @click="resetQuiz">Wybierz następny Quiz!</button>
       </div>
     </div>
 
-    
+
 
   </div>
 </template>
 
 <script>
+import {CompletedQuizDAO} from '@/firebase/completedQuizDAO';
+import {getLoggedUser} from '@/firebase/auth'
+
 export default {
   name: "Quiz",
   props: {
@@ -66,18 +69,35 @@ export default {
       score: 0,
       selectedAnswerIndex: null,
       quizBoxes: [
-        { id: 1, name: 'Quiz 1' },
-        { id: 2, name: 'Quiz 2' },
-        { id: 3, name: 'Quiz 3' }
+        { id: "Quiz1", name: 'Quiz 1' },
+        { id: "Quiz2", name: 'Quiz 2' },
+        { id: "Quiz3", name: 'Quiz 3' }
       ],
+      completedQuizes: [],
       selectedBoxId: null,
       answered: false,
-      //showAlert: false,
+      isFinished: false,
+      showAlert: false,
     };
   },
+  async mounted() {
+    const completedQuizDAO = new CompletedQuizDAO();
+    const userCompletedQuizzes = await completedQuizDAO.getCompletedQuizzesIDs(getLoggedUser().uid);
+    this.completedQuizes = Array.isArray(userCompletedQuizzes) ? userCompletedQuizzes : [];
+    console.log(this.completedQuizes);
+  },
   methods: {
+    checkScore() {
+      return this.score >= this.questions.length / 2;
+    },
+    sendCompletedQuizID() {
+      const completedQuiz = new CompletedQuizDAO();
+      completedQuiz.pushCompletedQuizID(getLoggedUser().uid, new Date(), this.selectedBoxId)
+    },
     selectBox(id) {
-      this.selectedBoxId = id;
+      if (!this.completedQuizes.includes(id)){
+        this.selectedBoxId = id;
+      }
     },
     selectAnswer(ansIndex) {
       if (!this.answered) {
@@ -86,7 +106,7 @@ export default {
     },
     checkAnswer() {
       if (this.selectedAnswerIndex !== null) {
-        const correctAnswerIndex = this.questions[this.currentQuestionIndex].correctAnswerIndex;
+        const correctAnswerIndex = this.questions[this.currentQuestionIndex].correctIndex;
         this.selectedAnswerCorrect = this.selectedAnswerIndex === correctAnswerIndex;
         if (this.selectedAnswerCorrect) {
           this.score++;
@@ -110,6 +130,7 @@ export default {
     },
     startQuiz() {
       this.isOnTitlePage = false;
+      this.$emit('start-quiz', this.selectedBoxId);
     },
     resetQuiz() {
       this.currentQuestionIndex = 0;
@@ -121,21 +142,25 @@ export default {
   },
   watch: {
     score(){
-      if (this.score === 5) {
+      if (this.checkScore()) {
         this.showAlert = true;
+        this.isFinished = true;
+        this.sendCompletedQuizID();
         setTimeout(() => {
-          this.showAlert = false; 
+          this.showAlert = false;
           this.$router.push({ name: 'gamechoose' });
         }, 3000);
-        
       }
-    
     }
   }
 };
 </script>
 
 <style scoped>
+
+.quiz-box.completed {
+  background-color: #42b983;
+}
 
 .quiz-box-container {
   display: grid;
