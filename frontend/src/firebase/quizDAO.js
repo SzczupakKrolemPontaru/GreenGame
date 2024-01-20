@@ -17,16 +17,8 @@ export class QuizDAO extends GenericDAO {
             if (querySnapshot.docs.length === 0) {
                 return null;
             }
-/*
-            const quiz = {
-                quizID: querySnapshot.docs.map(doc => doc.data().quizID),
-                title: querySnapshot.docs.map(doc => doc.data().title),
-                questions: querySnapshot.docs.map(doc => doc.data().questions),
-            };
-            console.log("quiz: ", quiz);
-            return quiz; */
 
-            const quizData = querySnapshot.docs[0].data(); // Pobierz dane z pierwszego dokumentu
+            const quizData = querySnapshot.docs[0].data();
 
             const quiz = {
               quizID: quizData.quizID,

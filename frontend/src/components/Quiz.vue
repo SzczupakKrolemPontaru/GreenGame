@@ -8,7 +8,7 @@
             v-for="box in quizBoxes"
             :key="box.id"
             class="quiz-box"
-            :class="{ 'selected': selectedBoxId === box.id }"
+            :class="{ 'selected': selectedBoxId === box.id, 'completed': completedQuizIDs.includes(box.id), 'disabled': completedQuizIDs.includes(box.id)  }"
             @click="selectBox(box.id)">
           {{ box.name }}
         </div>
@@ -41,18 +41,21 @@
       </div>
       <div v-else class="result-card">
         <h3>Wynik: {{ score }} / {{ questions.length }}</h3>
-        <p v-if="score === 5">Gratulacje!</p>
+        <p v-if="checkScore">Gratulacje! {{ sendCompletedQuizID }}</p>
         <p v-else>Niestety, nie udało się.</p>
         <button @click="resetQuiz">Wybierz następny Quiz!</button>
       </div>
     </div>
 
-    
+
 
   </div>
 </template>
 
 <script>
+import {CompletedQuizDAO} from '@/firebase/completedQuizDAO';
+import {getLoggedUser} from '@/firebase/auth'
+
 export default {
   name: "Quiz",
   props: {
@@ -70,15 +73,31 @@ export default {
         { id: "Quiz2", name: 'Quiz 2' },
         { id: "Quiz3", name: 'Quiz 3' }
       ],
+      completedQuizes: [],
       selectedBoxId: null,
       answered: false,
       isFinished: false,
-      //showAlert: false,
+      showAlert: false,
+      completedQuizIDsLoaded: false,
     };
   },
+  mounted() {
+    const completedQuizDAO = new CompletedQuizDAO();
+    const userCompletedQuizzes = completedQuizDAO.getCompletedQuizzesIDs(getLoggedUser().uid);
+    this.completedQuizzes = Array.isArray(userCompletedQuizzes) ? userCompletedQuizzes : [];
+  },
   methods: {
+    checkScore() {
+      return this.score >= this.questions.length / 2;
+    },
+    sendCompletedQuizID() {
+      const completedQuiz = new CompletedQuizDAO();
+      completedQuiz.pushCompletedQuizID(getLoggedUser().uid, new Date(), this.selectedBoxId)
+    },
     selectBox(id) {
-      this.selectedBoxId = id;
+      if (!this.completedQuizes.includes(id)){
+        this.selectedBoxId = id;
+      }
     },
     selectAnswer(ansIndex) {
       if (!this.answered) {
@@ -123,16 +142,15 @@ export default {
   },
   watch: {
     score(){
-      if (this.score === 5) {
+      if (this.checkScore()) {
         this.showAlert = true;
         this.isFinished = true;
+        this.sendCompletedQuizID();
         setTimeout(() => {
-          this.showAlert = false; 
+          this.showAlert = false;
           this.$router.push({ name: 'gamechoose' });
         }, 3000);
-        
       }
-    
     }
   }
 };
@@ -155,6 +173,15 @@ export default {
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.quiz-box.completed {
+  background-color: #5cb85c;
+}
+
+.quiz-box.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .quiz-box.selected {
