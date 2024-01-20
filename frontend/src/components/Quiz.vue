@@ -8,7 +8,7 @@
             v-for="box in quizBoxes"
             :key="box.id"
             class="quiz-box"
-            :class="{ 'selected': selectedBoxId === box.id }"
+            :class="{ 'selected': selectedBoxId === box.id, 'completed': completedQuizes.includes(box.id) }"
             @click="selectBox(box.id)">
           {{ box.name }}
         </div>
@@ -80,10 +80,11 @@ export default {
       showAlert: false,
     };
   },
-  mounted() {
+  async mounted() {
     const completedQuizDAO = new CompletedQuizDAO();
-    const userCompletedQuizes = completedQuizDAO.getCompletedQuizzesIDs(getLoggedUser().uid);
-    this.completedQuizes = Array.isArray(userCompletedQuizes) ? userCompletedQuizes : [];
+    const userCompletedQuizzes = await completedQuizDAO.getCompletedQuizzesIDs(getLoggedUser().uid);
+    this.completedQuizes = Array.isArray(userCompletedQuizzes) ? userCompletedQuizzes : [];
+    console.log(this.completedQuizes);
   },
   methods: {
     checkScore() {
@@ -156,6 +157,10 @@ export default {
 </script>
 
 <style scoped>
+
+.quiz-box.completed {
+  background-color: #42b983;
+}
 
 .quiz-box-container {
   display: grid;
