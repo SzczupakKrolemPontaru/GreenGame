@@ -5,17 +5,19 @@
       <svg class="svg-object" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
     <rect x="10" y="30" width="80" height="50" fill="#4CAF50" stroke="#333" stroke-width="2" />
     <rect x="10" y="30" width="80" height="5" fill="#4CAF50" stroke="#333" stroke-width="2" />
-    <circle cx="15" cy="55" r="2" fill="#333" />
+    <circle cx="15" cy="55" r="2" fill="#333" />aaaaaaa
     <circle cx="85" cy="55" r="2" fill="#333" />
   </svg>
     </div>
     <div class="score-display">
+      <p>Gracz: {{ playerName }}</p>
       <p>Wynik: {{ playerScore }}</p>
       <p>Czas: {{ timer }}s</p>
     </div>
     <div v-for="trashItem in trashItems" :key="trashItem.id" class="trash" :style="{ left: trashItem.position.x + 'px', top: trashItem.position.y + 'px' }">
   <img v-if="trashItem.type === 1" :src="require('@/assets/MiniGame/paper_waste.svg')" alt="Paper Trash">
   <img v-else-if="trashItem.type === 2" :src="require('@/assets/MiniGame/plastic.svg')" alt="Plastic Trash">
+  <img v-else-if="trashItem.type === 3" :src="require('@/assets/MiniGame/apple.svg')" alt="Organic Trash">
   <img v-else :src="require('@/assets/MiniGame/trash.svg')" alt="Generic Trash">
 </div>
 
@@ -35,6 +37,7 @@ export default {
       gameEnded: false,
       difficultyLevel: 0,
       playerScore: 0,
+      playerName: store.user.name,
       pointsMultiplier: 1,
       multiplayer: false,
       gameID: 0,
@@ -80,7 +83,7 @@ export default {
     },
     generateTrash() {
   this.trashInterval = setInterval(() => {
-    const trashType = Math.floor(Math.random() * 3) + 1; // 1 for paper, 2 for plastic, 3 for paper
+    const trashType = Math.floor(Math.random() * 4) + 1; 
     const trashItem = {
       id: this.trashItems.length + 1,
       type: trashType,
