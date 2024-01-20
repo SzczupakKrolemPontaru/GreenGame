@@ -98,9 +98,10 @@
 </template>
 
 <script>
-import {createUser, signInUser} from "@/firebase/auth.js";
 import {Toast} from "bootstrap";
 import {UserDAO} from "@/firebase/userDAO";
+import {UserLoginForm} from "@/model/UserLoginForm";
+import {UserRegisterForm} from "@/model/UserRegisterForm";
 
 export default {
   name: "LoginView",
@@ -118,7 +119,7 @@ export default {
       emailRegex: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       serverMessage: '',
       isLoading: false,
-      userDAO: new UserDAO()
+      userDAO: new UserDAO(),
 
     };
   },
@@ -178,22 +179,23 @@ export default {
     },
     async submitForm() {
       {
+
         this.isLoading = true;
         try {
           if (this.type === 'login') {
-
-            await signInUser(this.email, this.password);
+            const loginForm = new UserLoginForm(this.email, this.password,  this.$router);
+            loginForm.validateForm();
+            await loginForm.submit();
+            this.isLoading = false;
+            await loginForm.redirectToMainMenu()
 
           } else {
-            const user = await createUser(
-                this.email,
-                this.password
-            );
-            await this.userDAO.createUserDocument(user, {name: this.name});
-
+            const registerForm = new UserRegisterForm(this.email, this.password, this.$router, this.passwordConfirm, this.name);
+            registerForm.validateForm();
+            await registerForm.submit();
+            this.isLoading = false;
+            await registerForm.redirectToMainMenu()
           }
-          this.isLoading = false;
-          await this.$router.push('/mainmenu');
         } catch (e) {
           const toastEl = this.$refs.toastEl;
           const toast = new Toast(toastEl);
