@@ -1,5 +1,5 @@
 import {UserLoginForm} from "@/model/UserLoginForm";
-import {createUser} from "@/firebase/auth";
+import {createAccount} from "@/firebase/auth";
 import {UserDAO} from "@/firebase/userDAO";
 
 export class UserRegisterForm extends UserLoginForm {
@@ -49,7 +49,7 @@ export class UserRegisterForm extends UserLoginForm {
     }
 
     async submit() {
-        const user = await createUser(
+        const user = await createAccount(
             this.email,
             this.password
         );
