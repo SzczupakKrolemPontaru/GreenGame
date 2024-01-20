@@ -21,7 +21,6 @@ export default {
   },
   data() {
     return {
-      // Na ten moment tak to wygląda
       availableGames: [
         {name: 'Gra1', icon: GarbageTerrorIcon, isButtonEnabled: true},
         {name: 'Gra2', isButtonEnabled: false},
@@ -36,12 +35,11 @@ export default {
 <style scoped>
 h1 {
   font-size: 50px;
-  margin-top: 200px;
   margin-bottom: 50px;
 }
 
 .btn-back {
-  width: 200px; /* Adjust this value as needed */
+  width: 200px;
   margin: 0 auto;
   display: block;
 }
