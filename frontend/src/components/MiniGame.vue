@@ -35,9 +35,9 @@ export default {
   data() {
     return {
       gameEnded: false,
-      difficultyLevel: 0,
+      difficultyLevel: 2,
       playerScore: 0,
-      playerName: store.user.name,
+      playerName: store.user?.name || "gość",
       pointsMultiplier: 1,
       multiplayer: false,
       gameID: 0,
@@ -63,7 +63,7 @@ export default {
     },
     
     handleKeyPress(event) {
-      const step = 2.5; // Użyj wartości procentowej zamiast pikseli
+      const step = 2.5; 
       if (event.key === 'd') {
         this.containerPosition.x += step;
       } else if (event.key === 'a') {
@@ -130,18 +130,22 @@ export default {
     updateTrashPositions() {
       this.checkCollisions();
     },
-    async endGame() {
-      if (!this.gameEnded) {
-        this.gameEnded = true;
-        clearInterval(this.trashInterval);
-        const finalScore = this.playerScore;
-        await this.minigameDAO.pushScore(this.gameID, store.user.name, finalScore);
-        alert(`Koniec gry, twój wynik to: ${finalScore}`);
+async endGame() {
+  if (!this.gameEnded) {
+    this.gameEnded = true;
+    clearInterval(this.trashInterval);
+    
+    const finalScore = this.playerScore;
+    const playerName = store.user?.name || "gość"; 
 
-        this.timer = 1;
-        this.$router.push({name: 'gamechoose'});
-      }
-    },
+    await this.minigameDAO.pushScore(this.gameID, playerName, finalScore);
+    alert(`Koniec gry, twój wynik to: ${finalScore}`);
+
+    this.timer = 1;
+    this.$router.push({ name: 'gamechoose' });
+  }
+},
+
   },
   mounted() {
     window.addEventListener('keydown', this.handleKeyPress);
