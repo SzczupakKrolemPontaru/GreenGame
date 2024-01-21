@@ -70,7 +70,7 @@ export default {
         if (await this.getQuizStatus(user.uid) && this.isButtonEnabled) {
           this.$router.push('/startgame');
         } else {
-          this.displayMessage('Najpierw ukończ quiz');
+          this.displayMessage('Najpierw ukończ Quiz 1');
         }
       } else {
         this.$router.push('/startgame');
@@ -79,7 +79,8 @@ export default {
 
     async getScores() {
       const highScoreDAO = new HighscoreDAO();
-      const scores = await highScoreDAO.getByMinigame(0)
+      const minigameID = 0;
+      const scores = await highScoreDAO.getByMinigame(minigameID);
       if (scores) {
         return scores.map(score => {
           return {
@@ -99,9 +100,9 @@ export default {
 
     async getQuizStatus(playerID) {
       const quizDAO = new CompletedQuizDAO();
+      const quizID = 'Quiz1';
       const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(playerID);
-      console.log(completedQuizzesIDs)
-      if (completedQuizzesIDs) {
+      if (completedQuizzesIDs && completedQuizzesIDs.includes(quizID)) {
         return true;
       } else {
         return false;
