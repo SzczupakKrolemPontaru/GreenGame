@@ -196,6 +196,8 @@ export default {
             this.isLoading = false;
             await registerForm.redirectToMainMenu()
           }
+          this.isLoading = false;
+          await this.$router.push('/');
         } catch (e) {
           const toastEl = this.$refs.toastEl;
           const toast = new Toast(toastEl);

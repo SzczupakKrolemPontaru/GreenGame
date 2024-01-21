@@ -31,8 +31,9 @@
           </div>
                 </div>
         <div class="col-4 d-flex justify-content-center">
-          <img class="hat d-flex d-inline-block order-first img-fluid" alt="hat" :src="require(`@/assets/MainMenu/hats/${displayHat}`)"/>
-          <img alt="player" class="d-flex d-inline-block order-last player" :src="require(`@/assets/MainMenu/character/${displayPlayer}`)" />
+          <div class="player w-100">
+            <img class="hat w-100" alt="hat" :src="require(`@/assets/MainMenu/hats/${displayHat}`)"/>
+          </div>
           <button v-if="hatToDisplay !== currentHat" @click="saveChanges" class="btn btn-success d-flex d-inline-block save-hat">Zapisz czapkę</button>
           <p class="h1 d-flex d-inline-block player-nick">{{ displayPlayerNick }}</p>
           <p class="h2 d-flex d-inline-block level">Poziom: {{ displayLevel }}</p>
@@ -63,6 +64,7 @@
       <div class="row align-items-center h-100">
         <div class="col-4 h-60">
           <v-btn class="start-btn" @click="playGame"><img src="@/assets/MainMenu/buttons/button_start.png" alt="start button"/></v-btn>
+          <img :src="require(`@/assets/MainMenu/buttons/button_boost_${displayBooster ? 'on' : 'off'}.png`)" alt="Booster"/>
         </div>
         <div class="col-8"></div>
       </div>
@@ -73,30 +75,24 @@
 
 <script>
 import {logOutUser} from "@/firebase/auth";
+import {CharacterDAO} from "@/firebase/characterDAO";
+import {store} from "@/store";
 
 export default {
   name: 'MainMenu',
   props: {
       userManager: Object,
-      userProfile: Object,
   },
   data() {
     return {
-      scoreBoard: [
-        {id: 1, name: 'marekkox', score: 15 },
-        {id: 2, name: 'ania18', score: 12 },
-        {id: 3, name: 'xXx_KiNg-xXx', score: 8 },
-        {id: 4, name: '------------', score: 0 },
-        {id: 5, name: '-----------', score: 0 },
-        {id: 6, name: '-----------', score: 0 },
-        {id: 7, name: '-----------', score: 0 },
-        {id: 8, name: '-----------', score: 0 },
-        {id: 9, name: '-----------', score: 0 },
-        {id: 10, name: '-----------', score: 0 },
-      ],
-      availableHats: [null],
-      currentHat: 1,
-      hatToDisplay: 1
+      userProfile: {},
+      scoreBoard: [],
+      availableHats: [],
+      currentHat: 0,
+      hatToDisplay: 0,
+      userUID: null,
+      character: null,
+      characterDAO: new CharacterDAO(),
     };
   },
   computed: {
@@ -113,13 +109,13 @@ export default {
       return true
     },
     displayPlayerNick() {
-      return this.userProfile.userName;
+      return this.userProfile.nickname;
     },
     displayLevel() {
       return this.userProfile.level;
     },
     displayBooster() {
-      return true
+      return this.userProfile.progressBoosted;
     }
   },
   methods: {
@@ -134,36 +130,90 @@ export default {
         name: 'quiz'
       })
     },
-    getLoggerUser() {
+    async getUserCharacter() {
+      try {
+
+        if(!this.userUID) {
+          this.$router.push({
+            name: 'login',
+          });
+        }
+
+        const character = await this.characterDAO.getCharacterByUser(this.userUID);
+
+        if (character) {
+
+          this.character = character;
+
+          this.userProfile.nickname = character.nickname
+          this.userProfile.level = character.level
+          this.userProfile.hatID = character.hatID
+          this.userProfile.progressBoosted = character.progressBoosted
+          this.userProfile.userUID = character.userUID
+
+          this.currentHat = character.hatID
+          this.hatToDisplay = character.hatID
+
+        } else {
+          this.$router.push({
+            name: 'login',
+          });
+        }
+      } catch (error) {
+        console.error('Błąd podczas pobierania danych użytkownika:', error);
+      }
     },
     editAccount() {
     },
     saveChanges() {
-      console.log('save changes');
-      alert('czapka została zapisana!');
+      try {
+        this.character.hatID = this.hatToDisplay;
+        this.characterDAO.update(this.character.id, this.character)
+        this.currentHat = this.hatToDisplay
+      } catch (error){
+        console.error(error)
+      }
     },
     changeHat(inStep) {
       let new_hat = this.hatToDisplay + inStep;
 
-      if (new_hat === (this.availableHats.length - 1)) {
+      if (new_hat === (this.availableHats.length)) {
         this.hatToDisplay = 0;
       } else if (new_hat === -1) {
-        this.hatToDisplay = this.availableHats.length-2;
+        this.hatToDisplay = this.availableHats.length - 1;
       } else {
         this.hatToDisplay = new_hat;
       }
     },
     setAvailableHats() {
-      // level is set to 3, it's temporary because we have no idea what we get from DB
-      let level = 3;
-
-      for (let i = 0; i <= level; i++) {
+      for (let i = 0; i <= this.userProfile.level; i++) {
+        if (i in this.availableHats) {
+          continue;
+        }
         this.availableHats.push(i);
       }
     },
+    async prepareScoreBoard() {
+      const characterList = await this.characterDAO.getAll();
+      const sortedCharacterList = characterList.sort((a, b) => b.expPoints - a.expPoints);
+      const top10Users = sortedCharacterList.slice(0, 10);
+      for(let i in top10Users) {
+        this.scoreBoard.push({'id': eval(i) + 1, 'name': top10Users[i].nickname, 'score': top10Users[i].expPoints})
+      }
+    }
   },
-  created() {
+  beforeCreate() {
+    if (!store.user) {
+      this.$router.push({
+        name: 'login',
+      });
+    }
+  },
+  created: async function () {
+    this.userUID = store.user.id
+    await this.getUserCharacter();
     this.setAvailableHats();
+    this.prepareScoreBoard();
   },
 };
 </script>
@@ -198,16 +248,14 @@ export default {
     }
 
     .hat {
-      position: absolute;
-      z-index: 2;
-      width: 212px;
+      width: 20%;
       height: 25%;
     }
     .player {
-      position: absolute;
-      z-index: 1;
-      width: 212px;
-      top: 20%;
+      background-image: url('~@/assets/MainMenu/character/character.png');
+      background-size: 120% 60%;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .level {
       position: absolute;
@@ -281,6 +329,14 @@ export default {
       .save-hat {
         top: 75%;
       }
+
+      .hat {
+      width: 20%;
+      height: 38vh;
+    }
+    .player {
+      background-size: 160% 60%;
+    }
 
     }
 
