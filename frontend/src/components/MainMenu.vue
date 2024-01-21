@@ -90,7 +90,7 @@ export default {
       availableHats: [],
       currentHat: 0,
       hatToDisplay: 0,
-      userUID: null,
+      userUID: 0,
       character: null,
       characterDAO: new CharacterDAO(),
     };
@@ -132,6 +132,8 @@ export default {
     },
     async getUserCharacter() {
       try {
+
+        this.userUID = store.user.id
 
         if(!this.userUID) {
           this.$router.push({
@@ -210,7 +212,6 @@ export default {
     }
   },
   created: async function () {
-    this.userUID = store.user.id
     await this.getUserCharacter();
     this.setAvailableHats();
     this.prepareScoreBoard();
