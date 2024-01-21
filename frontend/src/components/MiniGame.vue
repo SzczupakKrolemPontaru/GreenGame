@@ -36,7 +36,7 @@ props: ['value'],
   data() {
     return {
       gameEnded: false,
-      difficultyLevel: 2,
+      difficultyLevel: 1,
       playerScore: 0,
       playerName: store.user?.name || "gość",
       custom: 100,
@@ -65,7 +65,7 @@ props: ['value'],
       this.pointsMultiplier = 2;
     }
   },
-    
+   
   handleKeyDown(event) {
       if (event.key === 'd' && !this.isMovingRight) {
         this.isMovingRight = true;
@@ -95,12 +95,12 @@ props: ['value'],
       }
     },
     updateTimer() {
-      if (this.timer > 0) {
-        this.timer -= 1;
-      } else {
-        this.endGame();
-      }
-    },
+  if (this.timer > 0 && !this.gameEnded) {
+    this.timer -= 1;
+  } else if (this.timer === 0 && !this.gameEnded) {
+    this.endGame();
+  }
+},
     updateScore(actions) {
       this.playerScore += actions;
       this.$emit('updateScore', this.playerScore);
@@ -160,6 +160,7 @@ props: ['value'],
     updateTrashPositions() {
       this.checkCollisions();
     },
+    
 async endGame() {
   if (!this.gameEnded) {
     this.gameEnded = true;
@@ -180,7 +181,6 @@ async endGame() {
   mounted() {
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
-    console.log(this.value);
     this.setDifficulty();
     setInterval(this.updateTrashPositions, 16);
     setInterval(this.updateTimer, 1000);
@@ -188,10 +188,21 @@ async endGame() {
 
     this.minigameDAO = new MinigameDAO();
   },
+  beforeDestroy() {
+  window.removeEventListener('keydown', this.handleKeyDown);
+  window.removeEventListener('keyup', this.handleKeyUp);
+  clearInterval(this.trashInterval);
+  endGame();
+}
+,
   beforeUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('keyup', this.handleKeyUp);
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    clearInterval(this.trashInterval);
+    location.reload();
   },
+  
 };
 </script>
 
