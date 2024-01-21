@@ -41,7 +41,7 @@
 <script>
 import {Modal} from "bootstrap";
 import {HighscoreDAO} from '@/firebase/highscoreDAO';
-import {QuizDAO} from "@/firebase/quizDAO";
+import {CompletedQuizDAO} from "@/firebase/completedQuizDAO";
 import {getLoggedUser} from '@/firebase/auth';
 import Notiflix from "notiflix";
 
@@ -98,7 +98,7 @@ export default {
     },
 
     async getQuizStatus(playerID) {
-      const quizDAO = new QuizDAO();
+      const quizDAO = new CompletedQuizDAO();
       const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(playerID);
       console.log(completedQuizzesIDs)
       if (completedQuizzesIDs) {
