@@ -36,7 +36,7 @@ export class HighscoreDAO extends GenericDAO {
 
     async getByMinigame(minigameID) {
 
-        if (!minigameID) {
+        if (minigameID === null || minigameID === undefined) {
             return null;
         } else {
             const highscoresCollection = collection(db, this.collectionName);

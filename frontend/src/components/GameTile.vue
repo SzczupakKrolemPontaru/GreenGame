@@ -1,11 +1,13 @@
 <template>
   <div class="game-tile">
-    <div class="game-container" @click="startGame" >
-      <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon" />
+    <div class="game-container" @click="startGame">
+      <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon"/>
       <h2 class="game-title" v-else>{{ gameName }}</h2>
     </div>
     <div>
-      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal" :disabled="!isButtonEnabled">Wyświetl ranking</button>
+      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal"
+              :disabled="!isButtonEnabled">Wyświetl ranking
+      </button>
       <div class="modal fade" id="scoreboardModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -37,10 +39,10 @@
 </template>
 
 <script>
-import { Modal } from "bootstrap";
-import { HighscoreDAO } from '@/firebase/highscoreDAO';
-import { QuizDAO } from "@/firebase/quizDAO";
-import { getLoggedUser } from '@/firebase/auth';
+import {Modal} from "bootstrap";
+import {HighscoreDAO} from '@/firebase/highscoreDAO';
+import {QuizDAO} from "@/firebase/quizDAO";
+import {getLoggedUser} from '@/firebase/auth';
 import Notiflix from "notiflix";
 
 export default {
@@ -55,9 +57,9 @@ export default {
   mounted() {
     let modalElement = document.getElementById('scoreboardModal');
     this.modalInstance = new Modal(modalElement);
-  //   modalElement.addEventListener('show.bs.modal', async () => {
-  //   this.gameScores = await this.getScores();
-  // });
+    modalElement.addEventListener('show.bs.modal', async () => {
+      await this.updateScoreboard();
+    });
   },
 
 
@@ -66,25 +68,25 @@ export default {
       const user = getLoggedUser();
       if (user) {
         if (await this.getQuizStatus(user.uid) && this.isButtonEnabled) {
-        this.$router.push('/startgame');
+          this.$router.push('/startgame');
+        } else {
+          this.displayMessage('Najpierw ukończ quiz');
+        }
       } else {
-        this.displayMessage('Najpierw ukończ quiz');
-      }} else {
         this.$router.push('/startgame');
       }
     },
 
     async getScores() {
       const highScoreDAO = new HighscoreDAO();
-      const scores = await highScoreDAO.getByMinigame(0);
-      console.log(scores);
+      const scores = await highScoreDAO.getByMinigame(0)
       if (scores) {
         return scores.map(score => {
           return {
             playerID: score.characterID,
             score: score.points
           }
-      })
+        })
       } else {
         this.displayMessage('Brak wyników');
         return [];
@@ -95,9 +97,10 @@ export default {
       Notiflix.Notify.warning(message);
     },
 
-    async getQuizStatus(uid) {
+    async getQuizStatus(playerID) {
       const quizDAO = new QuizDAO();
-      const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(uid);
+      const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(playerID);
+      console.log(completedQuizzesIDs)
       if (completedQuizzesIDs) {
         return true;
       } else {
@@ -105,10 +108,9 @@ export default {
       }
     },
 
-    // async displayScoreboard() {
-    //   this.gameScores = await this.getScores();
-    //   this.showModal();
-    // },
+    async updateScoreboard() {
+      this.gameScores = await this.getScores();
+    },
 
     showModal() {
       this.modalInstance.show();

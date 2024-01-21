@@ -3,7 +3,7 @@
   <div class="game-hub container">
     <div class="row">
       <div class="col-6" v-for="(game, index) in availableGames" :key="index">
-        <GameTile :gameName="game.name" :gameIcon="game.icon" :isButtonEnabled= "game.isButtonEnabled"/>
+        <GameTile :gameName="game.name" :gameIcon="game.icon" :isButtonEnabled="game.isButtonEnabled"/>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       availableGames: [
-        {name: 'Gra1', icon: GarbageTerrorIcon, isButtonEnabled: true},
+        {name: 'MiniGame1', icon: GarbageTerrorIcon, isButtonEnabled: true},
         {name: 'Gra2', isButtonEnabled: false},
         {name: 'Gra3', isButtonEnabled: false},
         {name: 'Gra4', isButtonEnabled: false}
@@ -42,4 +42,5 @@ h1 {
   margin: 0 auto;
   display: block;
 }
+
 </style>
