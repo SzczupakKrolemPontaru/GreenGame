@@ -85,23 +85,13 @@ export default {
   data() {
     return {
       userProfile: {},
-      scoreBoard: [
-        {id: 1, name: 'marekkox', score: 15 },
-        {id: 2, name: 'ania18', score: 12 },
-        {id: 3, name: 'xXx_KiNg-xXx', score: 8 },
-        {id: 4, name: '------------', score: 0 },
-        {id: 5, name: '-----------', score: 0 },
-        {id: 6, name: '-----------', score: 0 },
-        {id: 7, name: '-----------', score: 0 },
-        {id: 8, name: '-----------', score: 0 },
-        {id: 9, name: '-----------', score: 0 },
-        {id: 10, name: '-----------', score: 0 },
-      ],
+      scoreBoard: [],
       availableHats: [],
       currentHat: 0,
       hatToDisplay: 0,
       userUID: null,
-      character: null
+      character: null,
+      characterDAO: new CharacterDAO(),
     };
   },
   computed: {
@@ -148,8 +138,7 @@ export default {
           });
         }
 
-        const characterDAO = new CharacterDAO();
-        const character = await characterDAO.getCharacterByUser(this.userUID);
+        const character = await this.characterDAO.getCharacterByUser(this.userUID);
 
         if (character) {
 
@@ -164,7 +153,6 @@ export default {
           this.currentHat = character.hatID
           this.hatToDisplay = character.hatID
 
-          console.log('Dane użytkownika:', this.userProfile);
         } else {
           this.$router.push({
             name: 'login',
@@ -178,12 +166,11 @@ export default {
     },
     saveChanges() {
       try {
-        const characterDAO = new CharacterDAO();
         this.character.hatID = this.hatToDisplay;
-        characterDAO.update(this.character.id, this.character)
+        this.characterDAO.update(this.character.id, this.character)
         this.currentHat = this.hatToDisplay
       } catch (error){
-        console.log(error)
+        console.error(error)
       }
     },
     changeHat(inStep) {
@@ -205,6 +192,14 @@ export default {
         this.availableHats.push(i);
       }
     },
+    async prepareScoreBoard() {
+      const characterList = await this.characterDAO.getAll();
+      const sortedCharacterList = characterList.sort((a, b) => b.expPoints - a.expPoints);
+      const top10Users = sortedCharacterList.slice(0, 10);
+      for(let i in top10Users) {
+        this.scoreBoard.push({'id': eval(i) + 1, 'name': top10Users[i].nickname, 'score': top10Users[i].expPoints})
+      }
+    }
   },
   beforeCreate() {
     if (!store.user) {
@@ -217,6 +212,7 @@ export default {
     this.userUID = store.user.id
     await this.getUserCharacter();
     this.setAvailableHats();
+    this.prepareScoreBoard();
   },
 };
 </script>
@@ -335,7 +331,7 @@ export default {
 
       .hat {
       width: 20%;
-      height: 20vw;
+      height: 38vh;
     }
     .player {
       background-size: 160% 60%;
