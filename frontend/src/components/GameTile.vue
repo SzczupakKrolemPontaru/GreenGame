@@ -65,6 +65,10 @@ export default {
 
   methods: {
     async startGame() {
+      if (!this.isButtonEnabled) {
+        this.displayMessage('Niestety, ta gra jest jeszcze niedostępna');
+        return;
+      }
       const user = getLoggedUser();
       if (user) {
         if (await this.getQuizStatus(user.uid) && this.isButtonEnabled) {
@@ -95,7 +99,10 @@ export default {
     },
 
     displayMessage(message) {
-      Notiflix.Notify.warning(message);
+      Notiflix.Notify.init({
+    position:'center-center',
+  });
+  Notiflix.Notify.warning(message);
     },
 
     async getQuizStatus(playerID) {
