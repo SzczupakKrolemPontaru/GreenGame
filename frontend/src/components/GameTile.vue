@@ -149,4 +149,9 @@ export default {
 .modal-body .table {
   font-size: 40px;
 }
+
+.modal-dialog {
+  width: 50%;
+  max-width: none;
+}
 </style>
