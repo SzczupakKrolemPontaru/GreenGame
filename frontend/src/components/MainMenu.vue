@@ -73,8 +73,9 @@
 </template>
 
 <script>
-import {logOutUser, getLoggedUser} from "@/firebase/auth";
+import {logOutUser} from "@/firebase/auth";
 import {CharacterDAO} from "@/firebase/characterDAO";
+import {store} from "@/store";
 
 export default {
   name: 'MainMenu',
@@ -97,9 +98,10 @@ export default {
         {id: 10, name: '-----------', score: 0 },
       ],
       availableHats: [],
-      currentHat: 1,
-      hatToDisplay: 1,
-      tmp: null
+      currentHat: 0,
+      hatToDisplay: 0,
+      userUID: null,
+      character: null
     };
   },
   computed: {
@@ -117,11 +119,9 @@ export default {
     },
     displayPlayerNick() {
       return this.userProfile.nickname;
-      // return "kurwa"
     },
     displayLevel() {
       return this.userProfile.level;
-      // return 8
     },
     displayBooster() {
       return true;
@@ -139,27 +139,33 @@ export default {
         name: 'quiz'
       })
     },
-    async getLoggedUser() {
+    async getUserCharacter() {
       try {
 
+        if(!this.userUID) {
+          this.$router.push({
+            name: 'login',
+          });
+        }
 
-        const userUID = getLoggedUser().uid;
         const characterDAO = new CharacterDAO();
-        const character = await characterDAO.getCharacterByUser(userUID);
+        const character = await characterDAO.getCharacterByUser(this.userUID);
 
         if (character) {
-          // user found
+
+          this.character = character;
 
           this.userProfile.nickname = character.nickname
           this.userProfile.level = character.level
-          this.userProfile.hatID = character.hatId
+          this.userProfile.hatID = character.hatID
           this.userProfile.progressBoosted = character.progressBoosted
           this.userProfile.userUID = character.userUID
 
+          this.currentHat = character.hatID
+          this.hatToDisplay = character.hatID
+
           console.log('Dane użytkownika:', this.userProfile);
         } else {
-          // no data found
-          console.log('Brak danych użytkownika.');
           this.$router.push({
             name: 'login',
           });
@@ -171,30 +177,45 @@ export default {
     editAccount() {
     },
     saveChanges() {
-      console.log('save changes');
-      alert('czapka została zapisana!');
+      try {
+        const characterDAO = new CharacterDAO();
+        this.character.hatID = this.hatToDisplay;
+        characterDAO.update(this.character.id, this.character)
+        this.currentHat = this.hatToDisplay
+      } catch (error){
+        console.log(error)
+      }
     },
     changeHat(inStep) {
       let new_hat = this.hatToDisplay + inStep;
 
-      if (new_hat === (this.availableHats.length - 1)) {
+      if (new_hat === (this.availableHats.length)) {
         this.hatToDisplay = 0;
       } else if (new_hat === -1) {
-        this.hatToDisplay = this.availableHats.length-2;
+        this.hatToDisplay = this.availableHats.length - 1;
       } else {
         this.hatToDisplay = new_hat;
       }
     },
     setAvailableHats() {
-      console.log("ahwsuiwhuiawffwa" + this.userProfile.level)
-      console.log(this.userProfile.level)
       for (let i = 0; i <= this.userProfile.level; i++) {
+        if (i in this.availableHats) {
+          continue;
+        }
         this.availableHats.push(i);
       }
     },
   },
+  beforeCreate() {
+    if (!store.user) {
+      this.$router.push({
+        name: 'login',
+      });
+    }
+  },
   created: async function () {
-    await this.getLoggedUser();
+    this.userUID = store.user.id
+    await this.getUserCharacter();
     this.setAvailableHats();
   },
 };

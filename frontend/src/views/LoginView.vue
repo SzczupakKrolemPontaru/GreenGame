@@ -193,7 +193,7 @@ export default {
 
           }
           this.isLoading = false;
-          await this.$router.push('/mainmenu');
+          await this.$router.push('/');
         } catch (e) {
           const toastEl = this.$refs.toastEl;
           const toast = new Toast(toastEl);

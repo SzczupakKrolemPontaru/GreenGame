@@ -50,6 +50,7 @@ export class CharacterDAO extends GenericDAO {
                 return null;
             }
             const character = querySnapshot.docs.at(0).data();
+            character.id = querySnapshot.docs.at(0).id;
             console.log("Character: ", character);
             return character;
 
