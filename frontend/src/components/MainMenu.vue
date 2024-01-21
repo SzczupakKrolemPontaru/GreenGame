@@ -73,16 +73,17 @@
 </template>
 
 <script>
-import {logOutUser} from "@/firebase/auth";
+import {logOutUser, getLoggedUser} from "@/firebase/auth";
+import {CharacterDAO} from "@/firebase/characterDAO";
 
 export default {
   name: 'MainMenu',
   props: {
       userManager: Object,
-      userProfile: Object,
   },
   data() {
     return {
+      userProfile: Object,
       scoreBoard: [
         {id: 1, name: 'marekkox', score: 15 },
         {id: 2, name: 'ania18', score: 12 },
@@ -114,13 +115,13 @@ export default {
       return true
     },
     displayPlayerNick() {
-      return this.userProfile.userName;
+      return this.userProfile.nickname;
     },
     displayLevel() {
       return this.userProfile.level;
     },
     displayBooster() {
-      return true
+      return true;
     }
   },
   methods: {
@@ -135,7 +136,32 @@ export default {
         name: 'quiz'
       })
     },
-    getLoggerUser() {
+    async getLoggedUser() {
+      try {
+        const userUID = getLoggedUser().uid;
+        const characterDAO = new CharacterDAO();
+        const character = await characterDAO.getCharacterByUser(userUID);
+
+        if (character) {
+          // user found
+
+          this.userProfile.nickname = character.nickname
+          this.userProfile.level = character.level
+          this.userProfile.hatID = character.hatId
+          this.userProfile.progressBoosted = character.progressBoosted
+          this.userProfile.userUID = character.userUID
+
+          console.log('Dane użytkownika:', this.userProfile);
+        } else {
+          // no data found
+          console.log('Brak danych użytkownika.');
+          this.$router.push({
+            name: 'login',
+          });
+        }
+      } catch (error) {
+        console.error('Błąd podczas pobierania danych użytkownika:', error);
+      }
     },
     editAccount() {
     },
@@ -155,13 +181,13 @@ export default {
       }
     },
     setAvailableHats() {
-      // level is set to 3, it's temporary because we have no idea what we get from DB
-      let level = 3;
-
-      for (let i = 0; i <= level; i++) {
+      for (let i = 0; i <= this.userProfile.level; i++) {
         this.availableHats.push(i);
       }
     },
+  },
+  mounted() {
+    this.getLoggedUser();
   },
   created() {
     this.setAvailableHats();
