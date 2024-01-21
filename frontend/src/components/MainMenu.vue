@@ -31,8 +31,9 @@
           </div>
                 </div>
         <div class="col-4 d-flex justify-content-center">
-          <img class="hat d-flex d-inline-block order-first img-fluid" alt="hat" :src="require(`@/assets/MainMenu/hats/${displayHat}`)"/>
-          <img alt="player" class="d-flex d-inline-block order-last player" :src="require(`@/assets/MainMenu/character/${displayPlayer}`)" />
+          <div class="player w-100">
+            <img class="hat w-100" alt="hat" :src="require(`@/assets/MainMenu/hats/${displayHat}`)"/>
+          </div>
           <button v-if="hatToDisplay !== currentHat" @click="saveChanges" class="btn btn-success d-flex d-inline-block save-hat">Zapisz czapkę</button>
           <p class="h1 d-flex d-inline-block player-nick">{{ displayPlayerNick }}</p>
           <p class="h2 d-flex d-inline-block level">Poziom: {{ displayLevel }}</p>
@@ -198,16 +199,14 @@ export default {
     }
 
     .hat {
-      position: absolute;
-      z-index: 2;
-      width: 212px;
+      width: 20%;
       height: 25%;
     }
     .player {
-      position: absolute;
-      z-index: 1;
-      width: 212px;
-      top: 20%;
+      background-image: url('~@/assets/MainMenu/character/character.png');
+      background-size: 120% 60%;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .level {
       position: absolute;
@@ -281,6 +280,14 @@ export default {
       .save-hat {
         top: 75%;
       }
+
+      .hat {
+      width: 20%;
+      height: 20vw;
+    }
+    .player {
+      background-size: 160% 60%;
+    }
 
     }
 
