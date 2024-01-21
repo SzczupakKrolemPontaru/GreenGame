@@ -5,7 +5,7 @@ export const getLoggedUser = () => {
     return auth.currentUser;
 }
 
-export const createUser = async (email, pass) => {
+export const createAccount = async (email, pass) => {
 
     return await createUserWithEmailAndPassword(auth, email, pass).catch((e) => {
         console.log('Create account error: ', e);
