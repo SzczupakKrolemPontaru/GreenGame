@@ -9,11 +9,11 @@
 <script>
 export default {
   methods: {
-    handleButtonClick(value) {
-      this.$router.push({ name: 'choosemode', params: { value } });
+    handleButtonClick() {
+      this.$router.push({ name: 'choosemode', params: { value:1 } });
     },
-    handleButton2Click(value) {
-      this.$router.push({ name: 'choosemode', params: { value } });
+    handleButton2Click() {
+      this.$router.push({ name: 'choosemode', params: { value:2 } });
     },
   },
 };
