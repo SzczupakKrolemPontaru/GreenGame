@@ -1,12 +1,13 @@
 /* eslint-disable */
 <template>
   <div>
-    <Quiz :questions="questions"/>
+    <Quiz :questions="questions" @start-quiz="handleStartQuiz"/>
   </div>
 </template>
 
 <script>
 import Quiz from './Quiz.vue';
+import { QuizDAO } from '@/firebase/quizDAO';
 
 export default {
   name: "Question",
@@ -15,87 +16,29 @@ export default {
   },
   data() {
     return {
-      questions: [
-        {
-          text: 'Które z poniższych gazów jest głównym gazem cieplarnianym, odpowiedzialnym za globalne ocieplenie?',
-          answers: ['Tlen (O2)', 'Azot (N2)', 'Dwutlenek węgla (CO2)', 'Metan (CH4)'],
-          correctAnswerIndex: 2
-        },
-        {
-          text: 'Które źródło energii jest najbardziej przyjazne dla środowiska?',
-          answers: ['Węgiel', 'Gaz ziemny', 'Energia słoneczna', 'Energia jądrowa'],
-          correctAnswerIndex: 2
-        },
-        {
-          text: 'Które działanie najlepiej przyczynia się do redukcji ilości odpadów?',
-          answers: ['Składowanie odpadów na wysypiskach', 'Recykling', 'Spalanie odpadów', 'Produkcja większej ilości odpadów'],
-          correctAnswerIndex: 1
-        },
-        {
-          text: "Jakie jest główne źródło zanieczyszczenia powietrza w miastach?",
-          answers: ["Emisje z fabryk", "Spaliny samochodowe", "Energia wiatrowa","Sadzenie drzew"],
-          correctAnswerIndex: 1
-        },
-        {
-          text: "Co to jest efekt cieplarniany?",
-          answers:
-              ["Proces, w którym Ziemia ochładza się", "Zjawisko, które zwiększa ilość promieniowania słonecznego", "Zwiększenie temperatury atmosfery Ziemi z powodu zatrzymywania ciepła",
-                "Zjawisko zmniejszające stężenie gazów cieplarnianych"],
-          correctAnswerIndex: 2
-        },
-        {
-          text: "Co to jest biodegradacja?",
-          answers: [
-            "Proces rozkładu substancji przez mikroorganizmy",
-            "Proces tworzenia substancji chemicznych",
-            "Zanieczyszczenie wód",
-            "Proces wzrostu roślin"
-          ],
-          correctAnswerIndex: 0
-        },
-        {
-          text: "Które z poniższych działań ma największy wpływ na ochronę zasobów wodnych?",
-          answers: [
-            "Zanieczyszczanie rzek",
-            "Oszczędne korzystanie z wody",
-            "Wylewanie oleju do oceanu",
-            "Budowanie zapór"
-          ],
-          correctAnswerIndex: 1
-        },
-        {
-          text: "Które z poniższych źródeł energii jest nieodnawialne?",
-          answers: [
-            "Energia słoneczna",
-            "Wiatr",
-            "Węgiel",
-            "Geotermalna"
-          ],
-          correctAnswerIndex: 2
-        },
-        {
-          text: "Co to jest ślad węglowy?",
-          answers: [
-            "Liczba ludzi mieszkających w danym regionie",
-            "Liczba zanieczyszczeń atmosferycznych w danym regionie",
-            "Całkowita ilość dwutlenku węgla wyemitowanego przez daną osobę, produkt lub firmę",
-            "Wartość promieniowania słonecznego docierającego do powierzchni Ziemi"
-          ],
-          correctAnswerIndex: 2
-        },
-        {
-          text: "Jakie jest główne źródło deforestacji?",
-          answers: [
-            "Zmiany klimatyczne",
-            "Pestycydy",
-            "Wycinka drzew na potrzeby rolnictwa i urbanizacji",
-            "Spalanie biomasy"
-          ],
-          correctAnswerIndex: 2
-        }
-      ]
+      questions: [],
+      selectedQuizId: null,
     };
   },
+  methods: {
+    async created(selectedQuizId) {
+      const quizDAO = new QuizDAO();
+      const quizFromFirestore = await quizDAO.getQuiz(selectedQuizId);
+
+      if (quizFromFirestore) {
+        this.questions = quizFromFirestore.questions;
+        console.log(this.questions[0].correctIndex)
+      } else {
+        console.error('Nie udało się pobrać pytań z Firestore.');
+      }
+    },
+
+    handleStartQuiz(quizId) {
+      this.selectedQuizId = quizId;
+      this.created(this.selectedQuizId);
+    },
+  }
+
 };
 </script>
 /* eslint-disable */

@@ -1,34 +1,31 @@
-import {GenericDAO} from "@/firebase/genericDAO";
-import {collection, getDocs, query, where} from "firebase/firestore";
-import {db} from "@/firebase/firebase";
-
+import { GenericDAO } from '@/firebase/genericDAO';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/firebase/firebase';
 
 export class QuizDAO extends GenericDAO {
-    constructor() {
-        super('quizzes');
+  constructor() {
+    super('quizzes');
+  }
+
+  async getQuiz(quizID) {
+    const quizCollection = collection(db, 'quizzes');
+    const q = query(quizCollection, where('quizID', '==', quizID));
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.docs.length === 0) {
+      return null;
     }
 
-    async getCompletedQuizzesIDs(characterID) {
+    const quizData = querySnapshot.docs[0].data();
 
-        if (!characterID) {
-            return null;
-        } else {
-            const completedQuizzesCollection = collection(db, 'completedQuizzes');
-            const q = query(completedQuizzesCollection, where("characterID", "==", characterID));
+    const quiz = {
+      quizID: quizData.quizID,
+      title: quizData.title,
+      questions: quizData.questions,
+    };
 
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.docs.length === 0) {
-                return null;
-            }
-            const completedQuizzesIDs = querySnapshot.docs.map(doc =>  doc.data().quizID);
-            console.log("completedQuizzesIDs: ", completedQuizzesIDs);
-            return completedQuizzesIDs;
-
-        }
-
-
-    }
-
-
+    console.log('quiz: ', quiz);
+    return quiz;
+  }
 }
