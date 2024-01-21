@@ -83,7 +83,7 @@ export default {
   },
   data() {
     return {
-      userProfile: Object,
+      userProfile: {},
       scoreBoard: [
         {id: 1, name: 'marekkox', score: 15 },
         {id: 2, name: 'ania18', score: 12 },
@@ -96,9 +96,10 @@ export default {
         {id: 9, name: '-----------', score: 0 },
         {id: 10, name: '-----------', score: 0 },
       ],
-      availableHats: [null],
+      availableHats: [],
       currentHat: 1,
-      hatToDisplay: 1
+      hatToDisplay: 1,
+      tmp: null
     };
   },
   computed: {
@@ -116,9 +117,11 @@ export default {
     },
     displayPlayerNick() {
       return this.userProfile.nickname;
+      // return "kurwa"
     },
     displayLevel() {
       return this.userProfile.level;
+      // return 8
     },
     displayBooster() {
       return true;
@@ -138,6 +141,8 @@ export default {
     },
     async getLoggedUser() {
       try {
+
+
         const userUID = getLoggedUser().uid;
         const characterDAO = new CharacterDAO();
         const character = await characterDAO.getCharacterByUser(userUID);
@@ -181,15 +186,15 @@ export default {
       }
     },
     setAvailableHats() {
+      console.log("ahwsuiwhuiawffwa" + this.userProfile.level)
+      console.log(this.userProfile.level)
       for (let i = 0; i <= this.userProfile.level; i++) {
         this.availableHats.push(i);
       }
     },
   },
-  mounted() {
-    this.getLoggedUser();
-  },
-  created() {
+  created: async function () {
+    await this.getLoggedUser();
     this.setAvailableHats();
   },
 };
