@@ -64,6 +64,7 @@
       <div class="row align-items-center h-100">
         <div class="col-4 h-60">
           <v-btn class="start-btn" @click="playGame"><img src="@/assets/MainMenu/buttons/button_start.png" alt="start button"/></v-btn>
+          <img :src="require(`@/assets/MainMenu/buttons/button_boost_${displayBooster ? 'on' : 'off'}.png`)" alt="Booster"/>
         </div>
         <div class="col-8"></div>
       </div>
@@ -114,7 +115,7 @@ export default {
       return this.userProfile.level;
     },
     displayBooster() {
-      return true;
+      return this.userProfile.progressBoosted;
     }
   },
   methods: {
