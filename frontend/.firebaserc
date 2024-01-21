@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "greengame-e3efe",
+    "production": "green-game-8eaa6"
+  },
+  "targets": {},
+  "etags": {}
+}

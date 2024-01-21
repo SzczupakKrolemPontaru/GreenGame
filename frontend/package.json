@@ -8,7 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@firebase/auth": "^1.5.1",
+    "@firebase/firestore": "^4.4.0",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2",
     "core-js": "^3.8.3",
+    "firebase": "^10.7.1",
+    "node-emoji": "^2.1.3",
+    "notiflix": "^3.2.7",
+    "popper.js": "^1.16.1",
+    "uuid": "^9.0.1",
     "vue": "^3.2.13",
     "vue-router": "^4.2.5"
   },
@@ -34,7 +43,10 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "off",
+      "vue/no-use-v-if-with-v-for": "off"
+    }
   },
   "browserslist": [
     "> 1%",

@@ -1,8 +1,5 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <MainNav v-if="!$route.meta.hideNavbar" />
   <router-view/>
 </template>
 
@@ -28,3 +25,25 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+import MainNav from "@/components/MainNav";
+import {onBeforeMount} from "vue";
+import {auth} from './firebase/firebase.js'
+import {UserDAO} from "@/firebase/userDAO";
+import {store} from "@/store";
+export default {
+  components: {MainNav},
+  setup() {
+    const storedUser = localStorage.getItem('user');
+    const userDAO = new UserDAO();
+    store.user = storedUser ? JSON.parse(storedUser) : null;
+    onBeforeMount(() => {
+      console.log('User init');
+      auth.onAuthStateChanged(async (user) => {
+        await userDAO.storeUserObject(user);
+      })
+    });
+  }
+}
+
+</script>
