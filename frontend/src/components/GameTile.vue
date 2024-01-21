@@ -48,8 +48,6 @@ export default {
   props: ['gameName', 'gameIcon', 'isButtonEnabled'],
   data() {
     return {
-      highScoreDAO: new HighscoreDAO(),
-      quizDAO : new QuizDAO(),
       gameScores: [],
     }
   },
@@ -57,9 +55,9 @@ export default {
   mounted() {
     let modalElement = document.getElementById('scoreboardModal');
     this.modalInstance = new Modal(modalElement);
-    modalElement.addEventListener('show.bs.modal', async () => {
-    this.gameScores = await this.getScores();
-  });
+  //   modalElement.addEventListener('show.bs.modal', async () => {
+  //   this.gameScores = await this.getScores();
+  // });
   },
 
 
@@ -77,7 +75,8 @@ export default {
     },
 
     async getScores() {
-      const scores = await this.highScoreDAO.getByMinigame(0);
+      const highScoreDAO = new HighscoreDAO();
+      const scores = await highScoreDAO.getByMinigame(0);
       console.log(scores);
       if (scores) {
         return scores.map(score => {
@@ -97,7 +96,8 @@ export default {
     },
 
     async getQuizStatus(uid) {
-      const completedQuizzesIDs = await this.quizDAO.getCompletedQuizzesIDs(uid);
+      const quizDAO = new QuizDAO();
+      const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(uid);
       if (completedQuizzesIDs) {
         return true;
       } else {
@@ -105,10 +105,10 @@ export default {
       }
     },
 
-    async displayScoreboard() {
-      this.gameScores = await this.getScores();
-      this.showModal();
-    },
+    // async displayScoreboard() {
+    //   this.gameScores = await this.getScores();
+    //   this.showModal();
+    // },
 
     showModal() {
       this.modalInstance.show();
