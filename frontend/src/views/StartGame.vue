@@ -7,14 +7,11 @@
 
 <script>
 export default {
-  props:['gameNumber'],
-  mounted() {
-  },
+  props: ['gameNumber'],
   methods: {
     handleButtonClick() {
-      this.$router.push({
-        name: 'chooselevel'
-      });
+      this.$router.push({ name: 'chooselevel' });
+      
     },
   },
 };
@@ -31,7 +28,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background: url('../assets/background.gif') center center no-repeat; 
+  background: url('../assets/MiniGame/background.gif') center center no-repeat;
   background-size: cover;
   pointer-events: none;
 }
@@ -39,11 +36,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh; 
+  height: 100vh;
 }
 
 button {
-  margin-top: 0px; 
+  margin-top: 0px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;

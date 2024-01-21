@@ -65,7 +65,7 @@ const routes = [
     component : StartGame
   },
   {
-    path : '/choosemode',
+    path : '/choosemode/:value',
     name : 'choosemode',
     component : ChooseMode
   },
@@ -75,7 +75,7 @@ const routes = [
     component : ChooseLevel
   },
   {
-    path : '/minigame',
+    path : '/minigame/:value',
     name : 'minigame',
     component : MiniGame
   },

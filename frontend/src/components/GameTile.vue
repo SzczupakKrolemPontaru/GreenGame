@@ -1,13 +1,13 @@
 <template>
   <div class="game-tile">
-    <div class="game-container" @click="startGame" >
-      <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon" />
+    <div class="game-container" @click="startGame">
+      <img class="game-icon" v-if="gameIcon" :src="gameIcon" alt="Game Icon"/>
       <h2 class="game-title" v-else>{{ gameName }}</h2>
     </div>
-    <Minigame ref="minigame"/>
-    <Quiz ref="quiz"/>
     <div>
-      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal">Wyświetl ranking</button>
+      <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#scoreboardModal"
+              :disabled="!isButtonEnabled">Wyświetl ranking
+      </button>
       <div class="modal fade" id="scoreboardModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -39,8 +39,11 @@
 </template>
 
 <script>
-import router from '@/router';
 import {Modal} from "bootstrap";
+import {HighscoreDAO} from '@/firebase/highscoreDAO';
+import {CompletedQuizDAO} from "@/firebase/completedQuizDAO";
+import {getLoggedUser} from '@/firebase/auth';
+import Notiflix from "notiflix";
 
 export default {
   name: 'GameTile',
@@ -48,111 +51,68 @@ export default {
   data() {
     return {
       gameScores: [],
-      userName: 'mockUserName',
-      displayScoreboard: false
     }
   },
-  components: {
-    // MOCK
-    // Domyślnie tu ma być rzeczywisty komponent Minigame
-    Minigame: {
-      template: '<div>Mock Minigame</div>',
-      data() {
-        return {
-          gameName: 'mockGameName',
-          gameID: 'mockGameID',
-        }
-      },
-      methods: {
-        start(userName) {
-          router.push({
-            name: 'startgame',
-            params: {
-              gameID: this.gameID,
-              userName: userName
-            }
-          });
-          // router.push({ name: 'Minigame', params: { gameID: this.gameID, userName: userName } });
-          // trzeba wcześniej stworzyć route do minigame w index.js
-          console.log(userName);
-          console.log('Minigra rozpoczęta');
-        },
-      }
-    },
 
-    // Domyślnie tu ma być rzeczywisty komponent Quiz
-    Quiz: {
-      template: '<div>Mock Quiz</div>',
-      data() {
-        return {
-          isFinished: true,
-        };
-      },
-    },
-  },
-
-  // Wywołuje funkcję po załadowaniu komponentu
-  created() {
-    this.updateScoreboard();
-  },
-
-  // Aktualizuje wyniki po zmianie danych
-  // (obecnie taka nie istnieje)
-  watch: {
-    gameScores: {
-      handler() {
-        this.updateScoreboard();
-      },
-      deep: true
-    },
-  },
-
-  // Potrzebne do funkcjonalności modala z bootstrapa
   mounted() {
     let modalElement = document.getElementById('scoreboardModal');
     this.modalInstance = new Modal(modalElement);
+    modalElement.addEventListener('show.bs.modal', async () => {
+      await this.updateScoreboard();
+    });
   },
 
+
   methods: {
-    // Rozpoczyna minigrę, jeśli quiz został ukończony
-    startGame() {
-      // Powinno utylizować metodę getQuizStatus(), np.:
-      // const isQuizFinished = this.getQuizStatus(this.userName);
-      if (this.$refs.quiz.isFinished && this.isButtonEnabled) {
-        this.$refs.minigame.start(this.userName);
+    async startGame() {
+      const user = getLoggedUser();
+      if (user) {
+        if (await this.getQuizStatus(user.uid) && this.isButtonEnabled) {
+          this.$router.push('/startgame');
+        } else {
+          this.displayMessage('Najpierw ukończ Quiz 1');
+        }
       } else {
-        this.displayMessage('Najpierw ukończ quiz');
+        this.$router.push('/startgame');
       }
     },
 
-    // Pobiera wyniki z bazy danych
-    // (na razie tak, w przyszłości z bazy pobierany plik json)
-    getScores() {
-      return [
-        {playerID: 'gracz1', score: 58},
-        {playerID: 'gracz2', score: 21},
-        {playerID: 'gracz3', score: 96},
-        {playerID: 'gracz4', score: 73},
-      ];
+    async getScores() {
+      const highScoreDAO = new HighscoreDAO();
+      const minigameID = 0;
+      const scores = await highScoreDAO.getByMinigame(minigameID);
+      if (scores) {
+        return scores.map(score => {
+          return {
+            playerID: score.characterID,
+            score: score.points
+          }
+        })
+      } else {
+        this.displayMessage('Brak wyników');
+        return [];
+      }
     },
 
-    // Aktualizuje wyniki i sortuje je
-    updateScoreboard() {
-      this.gameScores = this.getScores();
-      this.gameScores.sort((a, b) => b.score - a.score);
-    },
-
-    // Wyświetla wiadomość (na razie w konsoli)
     displayMessage(message) {
-      console.log(message);
+      Notiflix.Notify.warning(message);
     },
 
-    // Pobiera status quizu
-    getQuizStatus() {
-      return this.$refs.quiz.isFinished[this.userName];
+    async getQuizStatus(playerID) {
+      const quizDAO = new CompletedQuizDAO();
+      const quizID = 'Quiz1';
+      const completedQuizzesIDs = await quizDAO.getCompletedQuizzesIDs(playerID);
+      if (completedQuizzesIDs && completedQuizzesIDs.includes(quizID)) {
+        return true;
+      } else {
+        return false;
+      }
     },
 
-    // Potrzebne do funkcjonalności modala z bootstrapa
+    async updateScoreboard() {
+      this.gameScores = await this.getScores();
+    },
+
     showModal() {
       this.modalInstance.show();
     },

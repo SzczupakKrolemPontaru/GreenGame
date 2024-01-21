@@ -13,10 +13,10 @@ export default {
   props: ['value'],
   methods: {
     handleButtonClick() {
-      this.$router.push({ name: 'minigame', params: { value: 1 } });
+      this.$router.push({ name: 'minigame', params: { value:this.value } });
     },
     handleButton2Click() {
-      this.$router.push({ name: 'session', params: { value: 2 } });
+      this.$router.push({ name: 'session', params: { value:this.value } });
     },
   },
 };
@@ -35,7 +35,7 @@ export default {
     height: 100%;
     top: 0;
     left: 0;
-    background: url('../assets/background3.gif') center center no-repeat;
+    background: url('../assets/MiniGame/background3.gif') center center no-repeat;
     background-size: cover;
     pointer-events: none;
   }
